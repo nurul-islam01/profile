@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Terminal palette ---------- */
+
+:root {
+  /* Light terminal — paper-y, restrained */
+  --color-bg: #fafaf7;
+  --color-surface: #f3f2ec;
+  --color-border: #d9d6cc;
+  --color-fg: #1c1b1a;
+  --color-muted: #6b6862;
+  --color-prompt: #2563eb;     /* the `$` and path */
+  --color-accent: #15803d;     /* highlight / success */
+  --color-string: #b45309;
+  --color-number: #7c3aed;
+  --color-keyword: #be123c;
+  --color-comment: #6b6862;
+  --color-link: #1d4ed8;
+}
+
+.dark {
+  /* Dark terminal — GitHub-ish, not pure black */
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-border: #30363d;
+  --color-fg: #e6edf3;
+  --color-muted: #8b949e;
+  --color-prompt: #7ee787;     /* classic shell green */
+  --color-accent: #56d364;
+  --color-string: #a5d6ff;
+  --color-number: #ffa657;
+  --color-keyword: #ff7b72;
+  --color-comment: #8b949e;
+  --color-link: #79c0ff;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: var(--color-prompt);
+    color: var(--color-bg);
+  }
+  a {
+    color: var(--color-link);
+  }
+}
+
+@layer components {
+  .terminal-window {
+    @apply rounded-lg border bg-terminal-surface shadow-lg overflow-hidden;
+    border-color: var(--color-border);
+  }
+  .terminal-titlebar {
+    @apply flex items-center gap-2 px-4 py-2 border-b text-xs;
+    border-color: var(--color-border);
+    color: var(--color-muted);
+  }
+  .terminal-dot {
+    @apply h-3 w-3 rounded-full;
+  }
+  .prompt-token {
+    color: var(--color-prompt);
+  }
+  .string-token {
+    color: var(--color-string);
+  }
+  .keyword-token {
+    color: var(--color-keyword);
+  }
+  .comment-token {
+    color: var(--color-comment);
+    font-style: italic;
+  }
+  .link-underline {
+    @apply underline decoration-dotted underline-offset-4 transition-colors;
+  }
+  .link-underline:hover {
+    text-decoration-style: solid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
