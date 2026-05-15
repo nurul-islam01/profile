@@ -54,9 +54,15 @@ export function About() {
         </div>
 
         {/* Bio + metadata */}
-        <article className="prose prose-neutral dark:prose-invert max-w-none font-sans text-terminal-fg">
-          <p className="text-base leading-relaxed sm:text-lg">{profile.bio}</p>
-          <ul className="mt-4 grid grid-cols-1 list-none gap-y-1 p-0 font-mono text-sm text-terminal-muted sm:grid-cols-2">
+        <article className="max-w-none text-terminal-fg">
+          <p className="font-mono text-xs text-terminal-muted">
+            <span className="text-terminal-comment">-rw-r--r--</span>{" "}
+            <span>1 nurul nurul</span>{" "}
+            <span className="text-terminal-string">{Math.max(profile.bio.length, 240)}</span>{" "}
+            <span>bio.md</span>
+          </p>
+          <p className="mt-3 font-sans text-base leading-relaxed sm:text-lg">{profile.bio}</p>
+          <ul className="mt-5 grid grid-cols-1 list-none gap-y-1 p-0 font-mono text-sm text-terminal-muted sm:grid-cols-2">
             <li><span className="text-terminal-prompt">›</span> {profile.location}</li>
             <li><span className="text-terminal-prompt">›</span> {profile.email}</li>
             <li><span className="text-terminal-prompt">›</span> {profile.company} · {profile.shortRole}</li>

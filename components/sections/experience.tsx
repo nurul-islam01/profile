@@ -6,76 +6,91 @@ export function Experience() {
     <SectionShell
       id="experience"
       path="~/experience"
-      cmd="git log --oneline --decorate"
+      cmd="git log -p --reverse"
       title="Experience"
     >
-      <ol className="space-y-10">
+      <ol className="space-y-8 font-mono text-sm">
         {experience.map((role, idx) => (
-          <li key={role.id} className="relative pl-6 sm:pl-8">
+          <li key={role.id} className="relative pl-6 sm:pl-7">
+            {/* Timeline marker */}
             {role.current ? (
-              <span
-                aria-hidden
-                className="absolute left-0 top-2 inline-flex h-2 w-2 items-center justify-center"
-              >
+              <span aria-hidden className="absolute left-0 top-1.5 inline-flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-terminal-accent opacity-75 motion-reduce:hidden" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-terminal-accent" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-terminal-accent" />
               </span>
             ) : (
               <span
                 aria-hidden
-                className="absolute left-0 top-2 inline-block h-2 w-2 rounded-full bg-terminal-prompt"
+                className="absolute left-0 top-1.5 inline-block h-2.5 w-2.5 rounded-full bg-terminal-prompt"
               />
             )}
             {idx !== experience.length - 1 && (
               <span
                 aria-hidden
-                className="absolute left-[3px] top-4 h-[calc(100%+1.5rem)] w-px bg-terminal-border"
+                className="absolute left-[5px] top-5 h-[calc(100%+0.5rem)] w-px bg-terminal-border"
               />
             )}
-            <div className="font-mono text-sm sm:text-base">
+
+            {/* git log header */}
+            <div className="leading-relaxed">
               <div className="flex flex-wrap items-baseline gap-x-3">
-                <span className="text-terminal-prompt">commit</span>
-                <span className="text-terminal-muted">{role.id}</span>
+                <span>
+                  <span className="text-terminal-keyword">commit</span>{" "}
+                  <span className="text-terminal-string">{role.id}</span>
+                </span>
                 {role.current && (
-                  <span className="inline-flex items-center gap-1 rounded-sm border border-terminal-accent bg-terminal-accent/10 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-terminal-accent">
-                    <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-terminal-accent" />
-                    HEAD · now
+                  <span className="inline-flex items-center gap-1 text-terminal-accent">
+                    <span className="opacity-70">(</span>
+                    <span className="text-terminal-keyword">HEAD</span>
+                    <span className="opacity-70"> -&gt; </span>
+                    <span>now</span>
+                    <span className="opacity-70">)</span>
                   </span>
                 )}
               </div>
-              <div className="mt-1 text-terminal-muted">
-                <span className="text-terminal-fg">Author:</span> {role.company}{" "}
-                <span className="opacity-60">&lt;{role.location}&gt;</span>
+              <div className="text-terminal-muted">
+                Author: {role.company} &lt;{role.location}&gt;
               </div>
               <div className="text-terminal-muted">
-                <span className="text-terminal-fg">Date:</span> {role.start} – {role.end}
+                Date:   {role.start} – {role.end}
               </div>
             </div>
 
-            <div className="mt-4">
-              <h3 className="font-sans text-lg font-semibold text-terminal-fg">
-                {role.title}
-                <span className="font-normal text-terminal-muted"> @ {role.company}</span>
-              </h3>
-              <ul className="mt-3 space-y-2 font-sans text-sm sm:text-base text-terminal-fg/90">
-                {role.highlights.map((h, i) => (
-                  <li key={i} className="pl-5 relative leading-relaxed">
-                    <span className="absolute left-0 top-2 text-terminal-prompt font-mono">›</span>
-                    {h}
-                  </li>
-                ))}
-              </ul>
-              {role.stack && role.stack.length > 0 && (
-                <ul className="mt-4 flex flex-wrap gap-1.5 font-mono text-xs">
-                  {role.stack.map((s) => (
-                    <li
-                      key={s}
-                      className="rounded-sm border border-terminal-border bg-terminal-surface px-2 py-0.5 text-terminal-muted"
-                    >
-                      {s}
-                    </li>
+            {/* Commit message + diff */}
+            <div className="mt-3 pl-4 sm:pl-6 leading-relaxed">
+              <p className="text-terminal-fg">
+                {role.title}{" "}
+                <span className="text-terminal-muted">@ {role.company}</span>
+              </p>
+
+              <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words font-mono text-[12.5px] sm:text-sm">
+                <code className="block">
+                  <span className="text-terminal-muted">--- a/role.previous</span>
+                  {"\n"}
+                  <span className="text-terminal-muted">+++ b/role.current</span>
+                  {"\n"}
+                  <span className="text-terminal-prompt">@@ {role.start} – {role.end} @@</span>
+                  {"\n"}
+                  {role.highlights.map((h, i) => (
+                    <span key={i} className="block text-terminal-accent">
+                      + {h}
+                    </span>
                   ))}
-                </ul>
+                </code>
+              </pre>
+
+              {role.stack && role.stack.length > 0 && (
+                <div className="mt-3 break-words text-terminal-muted">
+                  <span className="text-terminal-comment"># stack: </span>
+                  <span className="text-terminal-keyword">[</span>
+                  {role.stack.map((s, i) => (
+                    <span key={s}>
+                      <span className="text-terminal-string">&quot;{s}&quot;</span>
+                      {i < role.stack!.length - 1 && <span>, </span>}
+                    </span>
+                  ))}
+                  <span className="text-terminal-keyword">]</span>
+                </div>
               )}
             </div>
           </li>

@@ -6,7 +6,6 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { CommandPalette } from "@/components/command-palette";
 import { pageMetadata, personJsonLd, websiteJsonLd } from "@/lib/seo";
-import { getAllPosts } from "@/lib/mdx";
 import "./globals.css";
 
 export const metadata: Metadata = pageMetadata();
@@ -18,17 +17,15 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const posts = (await getAllPosts()).map((p) => ({ slug: p.slug, title: p.title }));
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${fontMono.variable} ${fontSans.variable}`}>
       <body className="min-h-screen bg-terminal-bg text-terminal-fg antialiased">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <Nav />
           <main>{children}</main>
           <Footer />
-          <CommandPalette posts={posts} />
+          <CommandPalette />
           <Toaster
             theme="system"
             position="bottom-right"

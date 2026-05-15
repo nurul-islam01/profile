@@ -11,28 +11,26 @@ Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana 
 | Framework | Next.js 15 (App Router) + React 19 + TypeScript strict |
 | Styling | Tailwind CSS v3.4 + `@tailwindcss/typography`. Custom CSS variables for terminal palette. |
 | Animation | Framer Motion (preferred over GSAP — lighter, tree-shakable) |
-| Theming | `next-themes`, dark default, system-preference detected, user toggle |
+| Theming | `next-themes`, dark default, system-preference detection **disabled** (every visitor sees dark on first load), user toggle still works |
 | Visual style | **Terminal / dev-tool aesthetic.** Mono primary font (JetBrains Mono), prompt-style section headers, `git log` / `tree` / `cat` motifs. Don't drift into generic-gradient-hero territory. |
-| Blog | MDX via `next-mdx-remote` + `gray-matter` + `rehype-pretty-code`. File-based posts in `content/posts/*.mdx`. No CMS. |
+| Blog | **Removed.** No blog routes, no MDX pipeline, no `content/posts/`. Don't reintroduce without explicit ask. |
 | Contact form | Real backend via **Resend** (`/api/contact`). Not mailto. Env vars: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`. |
 | Deploy target | **Ubuntu server with nginx** as reverse proxy. `next start` managed by **PM2** (process name: `nurul`, config: `deploy/ecosystem.config.cjs`). NOT Vercel, NOT cPanel, NOT systemd. |
 | Canonical domain | **`nurul.com.bd`**. `nurul.dev` 301-redirects to it at the nginx layer. |
-| SEO | First-class. Metadata API, dynamic sitemap, robots, JSON-LD Person schema (root) + BlogPosting (per post), dynamic OG images via `next/og`. |
-| Admin panel | None. Content is in TypeScript files (`content/*.ts`) and MDX. |
+| SEO | First-class. Metadata API, sitemap, robots, JSON-LD Person/WebSite schema, dynamic OG images via `next/og`. |
+| Admin panel | None. Content is in TypeScript files (`content/*.ts`). |
 
 ## Directory map
 ```
 app/                Next.js App Router routes
   layout.tsx        root, fonts, theme provider, Person JSON-LD
   page.tsx          home — composes all sections
-  blog/             [Phase 2] list + [slug] post page
-  api/contact/      [Phase 2] POST → Resend
-  sitemap.ts        dynamic sitemap
+  api/contact/      POST → Resend
+  sitemap.ts        sitemap
   robots.ts         robots.txt
 components/
   terminal/         primitives: Prompt, TypedLine, CommandBlock, GitLogEntry, TreeNode, Caret
   sections/         page sections: Hero, About, Experience, Skills, Projects, Awards, Education, Contact
-  blog/             [Phase 2] post card, MDX components
   ui/               low-level primitives (Button, Toast)
 content/
   profile.ts        SOURCE OF TRUTH for name/role/links/bio. Import this anywhere instead of hard-coding.
@@ -41,13 +39,11 @@ content/
   skills.ts         grouped skill categories from CV
   awards.ts         awards + activities
   education.ts      education history
-  posts/            [Phase 2] *.mdx blog posts
 lib/
   cn.ts             clsx + tailwind-merge helper
   seo.ts            SEO helpers, JSON-LD builders
-  mdx.ts            [Phase 2] post loading + rendering
 public/             static assets — photo, favicon, og fallback, resume PDF
-deploy/             [Phase 3] PM2 ecosystem + nginx + deploy README
+deploy/             PM2 ecosystem + nginx + deploy script + README
 ```
 
 ## Phase tracker
@@ -59,12 +55,11 @@ Phases are explicit so sessions stay scoped. Move work to the next phase if it w
 - SEO basics (metadata, sitemap, robots, JSON-LD Person)
 - Build passes
 
-**Phase 2 — Content systems (next session):**
-- MDX blog: list page, post page, one seed post, BlogPosting JSON-LD
-- Contact form → `/api/contact` → Resend
-- Dynamic OG images (`opengraph-image.tsx` for `/` and `/blog/[slug]`)
-- RSS feed
-- Verify build + lighthouse
+**Phase 2 — Content systems (done, minus blog):**
+- ~~MDX blog~~ — removed; no admin/CMS planned, owner doesn't want to maintain MDX manually either.
+- Contact form → `/api/contact` → Resend ✓
+- Dynamic OG image for `/` ✓
+- ~~RSS feed~~ — removed with blog.
 
 **Phase 3 — Deploy (next session):**
 - `deploy/ecosystem.config.cjs` (PM2 process definition)
@@ -84,7 +79,7 @@ Phases are explicit so sessions stay scoped. Move work to the next phase if it w
 
 **Terminal aesthetic — keep it consistent:**
 - Section headers render as a shell prompt (`~/section $ command`)
-- Long-form text in blog/about is fine in `font-sans` (Inter) for readability
+- Long-form text in about is fine in `font-sans` (Inter) for readability
 - Code-block content (Skills, Awards) uses `font-mono`
 - No giant gradient hero. The Hero is a terminal window with a typed `whoami`.
 
@@ -94,6 +89,7 @@ Phases are explicit so sessions stay scoped. Move work to the next phase if it w
 
 ## What NOT to do
 - Don't add a CMS / admin panel.
+- Don't reintroduce the blog (routes, MDX, RSS) without an explicit ask — it was deliberately removed.
 - Don't introduce GSAP unless a specific scroll-timeline effect truly needs it — Framer Motion is the default.
 - Don't add tests for this project (personal site, low blast radius). Type-check is the safety net.
 - Don't change canonical domain or deploy target without updating this file.

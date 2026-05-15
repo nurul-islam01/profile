@@ -28,6 +28,7 @@ const config: Config = {
           number: "var(--color-number)",
           keyword: "var(--color-keyword)",
           comment: "var(--color-comment)",
+          link: "var(--color-link)",
         },
       },
       animation: {

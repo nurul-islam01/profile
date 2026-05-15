@@ -126,15 +126,6 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    slug: "prothom-alo-epaper",
-    name: "Prothom Alo ePaper",
-    tagline: "Digital replica edition of the printed daily newspaper.",
-    url: "https://epaper.prothomalo.com",
-    org: "Prothom Alo",
-    role: "Web Developer (2021–2025)",
-    stack: ["React", "Next.js", "Node.js", "Cloudflare"],
-  },
-  {
     slug: "prothom-alo-trust",
     name: "Prothom Alo Trust",
     tagline: "Humanitarian arm of Prothom Alo — campaigns and relief programs.",

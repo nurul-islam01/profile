@@ -99,25 +99,54 @@ export function Hero() {
           {profile.headline}
         </p>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3 font-mono text-sm">
-          <Link
-            href="#projects"
-            className="inline-flex items-center gap-2 rounded-md border border-terminal-border bg-terminal-surface px-4 py-2 text-terminal-fg hover:border-terminal-prompt transition-colors"
-          >
-            <span className="text-terminal-prompt">$</span> view-work
-          </Link>
-          <Link
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-md border border-terminal-border px-4 py-2 text-terminal-fg hover:border-terminal-prompt transition-colors"
-          >
-            <span className="text-terminal-prompt">$</span> send-message
-          </Link>
-          <a
-            href={profile.resumeUrl}
-            className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-terminal-muted hover:text-terminal-fg transition-colors"
-          >
-            cat resume.pdf →
-          </a>
+        <div className="mt-6 font-mono text-sm leading-loose">
+          <p className="text-terminal-muted">
+            <span className="text-terminal-comment"># try one:</span>
+          </p>
+          <ul className="space-y-1">
+            <li>
+              <Link
+                href="#projects"
+                className="group inline-flex items-baseline gap-2 text-terminal-muted transition-colors hover:text-terminal-fg"
+              >
+                <span className="text-terminal-prompt">$</span>
+                <span className="text-terminal-fg group-hover:underline group-hover:decoration-terminal-prompt group-hover:underline-offset-4">
+                  ./view-work
+                </span>
+                <span className="text-terminal-comment opacity-0 transition-opacity group-hover:opacity-100">
+                  # jump to projects
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="#contact"
+                className="group inline-flex items-baseline gap-2 text-terminal-muted transition-colors hover:text-terminal-fg"
+              >
+                <span className="text-terminal-prompt">$</span>
+                <span className="text-terminal-fg group-hover:underline group-hover:decoration-terminal-prompt group-hover:underline-offset-4">
+                  ./send-message
+                </span>
+                <span className="text-terminal-comment opacity-0 transition-opacity group-hover:opacity-100">
+                  # open contact form
+                </span>
+              </Link>
+            </li>
+            <li>
+              <a
+                href={profile.resumeUrl}
+                className="group inline-flex items-baseline gap-2 text-terminal-muted transition-colors hover:text-terminal-fg"
+              >
+                <span className="text-terminal-prompt">$</span>
+                <span className="text-terminal-fg group-hover:underline group-hover:decoration-terminal-prompt group-hover:underline-offset-4">
+                  cat resume.pdf
+                </span>
+                <span className="text-terminal-comment opacity-0 transition-opacity group-hover:opacity-100">
+                  # download résumé
+                </span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </section>

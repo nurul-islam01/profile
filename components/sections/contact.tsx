@@ -1,14 +1,15 @@
 import { SectionShell } from "@/components/terminal/section-shell";
 import { ContactForm } from "./contact-form";
 import { profile } from "@/content/profile";
-import { Github, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 
-const items = [
-  { Icon: Mail, label: profile.email, href: `mailto:${profile.email}` },
-  { Icon: Phone, label: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
-  { Icon: Github, label: "github.com/nurul-islam01", href: profile.socials.github },
-  { Icon: Linkedin, label: "linkedin.com/in/nurul-islam01", href: profile.socials.linkedin },
-  { Icon: MapPin, label: profile.location, href: null },
+type Item = { key: string; value: string; href: string | null };
+
+const items: Item[] = [
+  { key: "mail", value: profile.email, href: `mailto:${profile.email}` },
+  { key: "tel ", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
+  { key: "git ", value: "github.com/nurul-islam01", href: profile.socials.github },
+  { key: "in  ", value: "linkedin.com/in/nurul-islam01", href: profile.socials.linkedin },
+  { key: "loc ", value: profile.location, href: null },
 ];
 
 export function Contact() {
@@ -16,40 +17,51 @@ export function Contact() {
     <SectionShell id="contact" path="~/contact" cmd="cat README.md" title="Contact">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <p className="font-sans text-base sm:text-lg leading-relaxed text-terminal-fg">
-            Got an idea, a role, or a hard engineering problem? I read every message —
-            best reached via the form below or at{" "}
-            <a className="link-underline" href={`mailto:${profile.email}`}>{profile.email}</a>.
-          </p>
-          <p className="mt-3 font-mono text-sm text-terminal-muted">
-            <span className="text-terminal-prompt">›</span> typical response time:{" "}
-            <span className="text-terminal-fg">within 24 hours</span>
-          </p>
+          <pre className="font-mono text-sm leading-relaxed text-terminal-fg whitespace-pre-wrap break-words">
+            <code>
+              <span className="text-terminal-comment"># README.md</span>
+              {"\n"}
+              <span>Got an idea, a role, or a hard engineering problem?</span>
+              {"\n"}
+              <span>I read every message — best reached via the form below</span>
+              {"\n"}
+              <span>or at </span>
+              <a className="text-terminal-link link-underline" href={`mailto:${profile.email}`}>
+                {profile.email}
+              </a>
+              <span>.</span>
+              {"\n\n"}
+              <span className="text-terminal-muted">
+                <span className="text-terminal-prompt">›</span> typical response time:{" "}
+              </span>
+              <span className="text-terminal-accent">within 24 hours</span>
+            </code>
+          </pre>
           <div className="mt-6">
             <ContactForm />
           </div>
         </div>
-        <ul className="space-y-2 font-mono text-sm lg:col-span-2">
-          {items.map(({ Icon, label, href }) => {
-            const inner = (
-              <span className="flex items-center gap-3 rounded-md px-3 py-2 text-terminal-muted">
-                <Icon className="h-4 w-4 text-terminal-prompt" />
-                <span className="text-terminal-fg">{label}</span>
-              </span>
-            );
-            return (
-              <li key={label}>
+
+        <div className="lg:col-span-2">
+          <p className="mb-2 font-mono text-xs text-terminal-muted">
+            <span className="text-terminal-prompt">$</span> cat ~/.contact
+          </p>
+          <ul className="rounded-md border border-terminal-border bg-terminal-surface p-4 font-mono text-sm">
+            {items.map(({ key, value, href }) => (
+              <li key={key} className="flex items-baseline gap-3 py-1">
+                <span className="text-terminal-prompt">{key}</span>
+                <span className="text-terminal-muted">:</span>
                 {href ? (
-                  <a href={href} className="block hover:bg-terminal-surface rounded-md transition-colors">
-                    {inner}
+                  <a href={href} className="text-terminal-fg link-underline truncate">
+                    {value}
                   </a>
                 ) : (
-                  inner
+                  <span className="text-terminal-fg truncate">{value}</span>
                 )}
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        </div>
       </div>
     </SectionShell>
   );

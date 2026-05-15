@@ -7,6 +7,7 @@ import { profile } from "@/content/profile";
 import { cn } from "@/lib/cn";
 import { ThemeToggle } from "./theme-toggle";
 import { CommandPaletteTrigger } from "./command-palette";
+import { StatusClock } from "./status-clock";
 
 type NavLink = { href: string; label: string; sectionId?: string };
 
@@ -15,7 +16,6 @@ const links: NavLink[] = [
   { href: "/#experience", label: "experience", sectionId: "experience" },
   { href: "/#skills", label: "skills", sectionId: "skills" },
   { href: "/#projects", label: "projects", sectionId: "projects" },
-  { href: "/blog", label: "blog" },
   { href: "/#contact", label: "contact", sectionId: "contact" },
 ];
 
@@ -57,7 +57,6 @@ export function Nav() {
   }, [onHome]);
 
   function isActive(link: NavLink): boolean {
-    if (link.href === "/blog") return pathname.startsWith("/blog");
     if (!onHome) return false;
     return link.sectionId === activeSection;
   }
@@ -101,7 +100,8 @@ export function Nav() {
             })}
           </ul>
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <StatusClock />
           <CommandPaletteTrigger />
           <ThemeToggle />
         </div>

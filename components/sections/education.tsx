@@ -3,24 +3,29 @@ import { education } from "@/content/education";
 
 export function Education() {
   return (
-    <SectionShell id="education" path="~/education" cmd="cat education.txt" title="Education">
-      <ul className="space-y-4 font-mono text-sm sm:text-base">
-        {education.map((e, i) => (
-          <li
-            key={i}
-            className="rounded-md border border-terminal-border bg-terminal-surface px-4 py-3"
-          >
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
+    <SectionShell id="education" path="~/education" cmd="cat history.txt" title="Education">
+      <pre className="overflow-x-auto rounded-md border border-terminal-border bg-terminal-surface px-4 py-4 font-mono text-xs sm:text-sm leading-relaxed">
+        <code className="block whitespace-pre-wrap break-words">
+          <span className="text-terminal-comment"># reverse-chronological</span>
+          {"\n\n"}
+          {education.map((e, i) => (
+            <span key={i} className="block">
+              <span className="text-terminal-prompt">[{e.year}]</span>{" "}
               <span className="text-terminal-fg font-semibold">{e.degree}</span>
-              <span className="text-terminal-muted text-xs">{e.year}</span>
-            </div>
-            <div className="mt-1 text-terminal-muted">
-              {e.institution}
-              {e.board ? <span className="opacity-70"> — {e.board}</span> : null}
-            </div>
-          </li>
-        ))}
-      </ul>
+              {"\n        "}
+              <span className="text-terminal-muted">@ </span>
+              <span className="text-terminal-fg/90">{e.institution}</span>
+              {e.board && (
+                <>
+                  {"\n        "}
+                  <span className="text-terminal-comment">// {e.board}</span>
+                </>
+              )}
+              {i < education.length - 1 && "\n\n"}
+            </span>
+          ))}
+        </code>
+      </pre>
     </SectionShell>
   );
 }

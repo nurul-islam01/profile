@@ -11,7 +11,6 @@ import {
   Code2,
   FolderGit2,
   Mail,
-  BookOpen,
   FileText,
   Github,
   Linkedin,
@@ -28,7 +27,7 @@ type Action = {
   id: string;
   label: string;
   hint?: string;
-  group: "navigate" | "blog" | "social" | "settings";
+  group: "navigate" | "social" | "settings";
   keywords?: string;
   icon: React.ComponentType<{ className?: string }>;
   run: () => void;
@@ -62,11 +61,7 @@ export function CommandPaletteTrigger() {
   );
 }
 
-type PaletteProps = {
-  posts: Array<{ slug: string; title: string }>;
-};
-
-export function CommandPalette({ posts }: PaletteProps) {
+export function CommandPalette() {
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -105,16 +100,6 @@ export function CommandPalette({ posts }: PaletteProps) {
       { id: "skills", label: "Skills", group: "navigate", icon: Code2, run: () => go("/#skills") },
       { id: "projects", label: "Projects", group: "navigate", icon: FolderGit2, run: () => go("/#projects") },
       { id: "contact", label: "Contact", group: "navigate", icon: Mail, run: () => go("/#contact") },
-      { id: "blog", label: "Blog", group: "navigate", icon: BookOpen, run: () => go("/blog") },
-      ...posts.map<Action>((p) => ({
-        id: `post:${p.slug}`,
-        label: p.title,
-        hint: `/blog/${p.slug}`,
-        group: "blog",
-        icon: FileText,
-        keywords: p.slug,
-        run: () => go(`/blog/${p.slug}`),
-      })),
       {
         id: "github",
         label: "GitHub",
@@ -159,7 +144,7 @@ export function CommandPalette({ posts }: PaletteProps) {
         },
       },
     ],
-    [go, openHref, posts, resolvedTheme, setTheme, close],
+    [go, openHref, resolvedTheme, setTheme, close],
   );
 
   const filtered = React.useMemo(() => {
@@ -240,7 +225,6 @@ export function CommandPalette({ posts }: PaletteProps) {
   // Group filtered actions for rendering.
   const groups: Array<{ key: Action["group"]; label: string }> = [
     { key: "navigate", label: "Navigate" },
-    { key: "blog", label: "Posts" },
     { key: "social", label: "Links" },
     { key: "settings", label: "Settings" },
   ];
@@ -279,7 +263,7 @@ export function CommandPalette({ posts }: PaletteProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onInputKeyDown}
-            placeholder="Type a command — about, blog, github…"
+            placeholder="Type a command — about, projects, github…"
             className="flex-1 bg-transparent text-terminal-fg outline-none placeholder:text-terminal-muted"
             aria-label="Search commands"
             autoComplete="off"
