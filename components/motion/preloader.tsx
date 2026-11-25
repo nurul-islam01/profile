@@ -79,10 +79,14 @@ export function Preloader() {
         .to(root, { clipPath: "inset(0% 0% 100% 0%)", duration: 1.05, ease: "expo.inOut" }, "<-0.05");
     };
 
+    let last = start;
     const loop = (now: number) => {
       const elapsed = now - start;
       const goal = elapsed > MAX_MS ? 1 : Math.min(target, elapsed / MIN_MS, 1);
-      shown += (goal - shown) * 0.12;
+      // Time-based easing, so a throttled tab (opened in the background) still finishes promptly.
+      const dt = Math.max(now - last, 0);
+      last = now;
+      shown += (goal - shown) * (1 - Math.exp(-dt / 120));
       if (goal === 1 && shown > 0.995) shown = 1;
       if (numRef.current) numRef.current.textContent = String(Math.round(shown * 100));
       if (barRef.current) barRef.current.style.transform = `scaleX(${shown})`;
