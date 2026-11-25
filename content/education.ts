@@ -20,7 +20,7 @@ export const education: Education[] = [
   },
   {
     degree: "Secondary School Certificate (SSC) — Science",
-    institution: "Charjangalia Secondary School, Bhola",
+    institution: "Jangalia School and College, Bhola",
     board: "Board of Intermediate and Secondary Education, Barisal",
     year: "2010",
   },
