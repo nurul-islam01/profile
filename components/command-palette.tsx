@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   ArrowUpRight,
@@ -19,6 +19,7 @@ import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { sections, pageOrder } from "@/lib/sections";
 import { hostOf } from "@/lib/domain";
+import { scrollToSection } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 
 type GroupKey = "navigate" | "work" | "links" | "settings";
@@ -49,6 +50,7 @@ export function openCommandPalette() {
 
 export function CommandPalette() {
   const router = useRouter();
+  const pathname = usePathname();
   const { setTheme, resolvedTheme } = useTheme();
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -74,7 +76,10 @@ export function CommandPalette() {
   const actions = React.useMemo<Action[]>(() => {
     const go = (id: string) => () => {
       close();
-      router.push(`/#${id}`);
+      // Let the dialog unmount (and Lenis restart) before scrolling.
+      requestAnimationFrame(() => {
+        if (pathname !== "/" || !scrollToSection(id)) router.push(`/#${id}`);
+      });
     };
     const openTab = (href: string) => () => {
       close();
@@ -156,7 +161,7 @@ export function CommandPalette() {
         },
       },
     ];
-  }, [close, router, resolvedTheme, setTheme]);
+  }, [close, router, pathname, resolvedTheme, setTheme]);
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -201,8 +206,10 @@ export function CommandPalette() {
     const root = document.documentElement;
     const prev = root.style.overflow;
     root.style.overflow = "hidden";
+    window.__lenis?.stop();
     return () => {
       root.style.overflow = prev;
+      window.__lenis?.start();
     };
   }, [open]);
 
@@ -282,7 +289,14 @@ export function CommandPalette() {
           <kbd className="shrink-0 rounded border border-line px-1.5 py-px font-sans text-xs text-muted">Esc</kbd>
         </div>
 
-        <div ref={listRef} id={listId} role="listbox" aria-label="Results" className="max-h-[min(60vh,26rem)] overflow-y-auto p-2">
+        <div
+          ref={listRef}
+          id={listId}
+          role="listbox"
+          aria-label="Results"
+          data-lenis-prevent
+          className="max-h-[min(60vh,26rem)] overflow-y-auto overscroll-contain p-2"
+        >
           {grouped.map((g) => (
             <div key={g.key} role="group" aria-labelledby={`${baseId}-${g.key}`} className="pb-1">
               <div id={`${baseId}-${g.key}`} className="px-3 pb-1 pt-2 text-xs font-medium text-muted">

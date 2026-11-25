@@ -9,11 +9,15 @@ Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana 
 | Topic | Decision |
 | --- | --- |
 | Framework | Next.js 15 (App Router) + React 19 + TypeScript strict |
-| Styling | Tailwind CSS v3.4. Colour tokens are RGB-channel CSS variables in `app/globals.css` (`bg`, `raised`, `line`, `fg`, `muted`, `accent`, `accent-fg`, `danger`), so opacity modifiers work (`text-fg/50`). No typography plugin. |
-| Fonts | Self-hosted with `next/font/local` (files + OFL licences in `app/fonts/`): **Schibsted Grotesk** for names, headings and UI; **Newsreader** for reading text (hero headline, bio, captions). Nothing is fetched from Google Fonts, so builds work offline. The `.woff` files are for the OG image (Satori can't read woff2). |
-| Animation | CSS keyframes only, and only one load moment: the intro rises and the desktop preview reveals (`animate-rise`, `animate-reveal`). No animation library. `prefers-reduced-motion` is handled globally in `globals.css`. |
-| Theming | `next-themes`, dark default, system-preference detection **disabled** (every visitor sees dark on first load), user toggle still works |
-| Visual style | **"Delta night"**: river-night blue `#0F1626` with a jute-gold accent `#E3B24C` (`#8F6100` in light theme). Jute marks only "you are here" (active nav link, active domain, current role) and the primary action. The home page opens on the **domain index**: every site he has built, listed by its domain in large type; on desktop a sticky browser-frame preview shows the domain being pointed at or focused. Avoid: ALL-CAPS labels, monospace labels, middle-dot meta strings, `→` appended to text, fade-up animations on every section, gradient heroes. |
+| Styling | Tailwind CSS v3.4. Colour tokens are RGB-channel CSS variables in `app/globals.css` (`bg`, `raised`, `line`, `fg`, `muted`, `faint`, `accent`, `accent-fg`, `danger`), so opacity modifiers work (`text-fg/50`). No typography plugin. |
+| Fonts | Self-hosted with `next/font/local` (files + OFL licences in `app/fonts/`): **Schibsted Grotesk** (variable 400–900) for names, headings and UI; **Newsreader** for reading text (hero headline, bio). Nothing is fetched from Google Fonts, so builds work offline. The `.woff` files are for the OG image (Satori can't read woff2). |
+| Motion stack | **GSAP** (ScrollTrigger, SplitText — free since 3.13) + **Lenis** smooth scrolling (wheel/trackpad only; touch stays native) + **raw WebGL1** for the two shaders (no three.js). GSAP's ticker drives Lenis so they share one clock. |
+| Motion inventory | First-visit loader with a real progress count (mouse devices only, once per tab session) → hero letters rise; hero name thickens near the cursor (variable `wght`); "night water" flow shader behind the hero; work rows float a WebGL preview (wave + RGB split + wipe between projects) beside the pointer; split-text reveals on section titles; scroll-lit bio; timeline rail that fills with scroll; velocity marquee for skills; magnetic buttons; custom cursor. |
+| Motion rules | Every effect has a `prefers-reduced-motion` path where content is simply there (no loader, no Lenis, no shader animation, inline images). Phones/touch: no loader, no cursor, no hover previews — featured rows show images inline. Text never sits below 3:1 contrast in any animated state (the bio animates a `--p` colour mix from `faint` to `fg`, not opacity). |
+| Performance budget | LCP < 2.5 s on a throttled phone (measured ~0.9 s at 4× CPU on slow 4G: the hero headline paints first, letters rise after hydration). Shaders render at reduced resolution, pause off-screen and in hidden tabs; hover previews load their textures only after the page is idle. Home first-load JS ≈ 210 kB. |
+| Theming | `next-themes`, dark default, system-preference detection **disabled** (every visitor sees dark on first load), user toggle still works. Shaders read colours from the tokens and follow theme changes. |
+| Visual style | **"Delta night"**: river-night blue `#0F1626` with a jute-gold accent `#E3B24C` (`#8F6100` in light theme). Jute marks only "you are here" and the primary action. Display type is huge and tight (name, section titles); reading text stays under ~70ch. Avoid: ALL-CAPS labels, monospace labels, middle-dot meta strings, `→` appended to text, gradient heroes. |
+| Project images | Navana sites: screenshots in `public/work/{slug}.webp` (1496×801). News sites (Prothom Alo group): **brand cards** — the site's name, address and colours (`brand` in `content/projects.ts`), never screenshots, because their first screens are full of photos of people. Logos are not copied; cards are typographic. |
 | Blog | **Removed.** No blog routes, no MDX pipeline, no `content/posts/`. Don't reintroduce without explicit ask. |
 | Contact form | Real backend via **Resend** (`/api/contact`). Not mailto. Env vars: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`. |
 | Deploy target | **Vercel** (project `profile`): pushes to `main` deploy to production; other branches get preview deployments. `nurul.com.bd` + `www` point at Vercel via Cloudflare DNS (grey cloud); `www` 308-redirects to the apex. The `deploy/` folder keeps the earlier Ubuntu + nginx + PM2 setup as a fallback; it is not what serves the site today. |
@@ -23,78 +27,61 @@ Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana 
 
 ## Directory map
 ```
-app/                Next.js App Router routes
-  layout.tsx        root: fonts, theme provider, skip link, nav/footer, palette, toaster, JSON-LD
-  page.tsx          home — Showcase, then the sections in page order
-  fonts/            self-hosted woff2 (site) + woff (OG image) + OFL licences
-  icon.svg          "NI" monogram; apple-icon.png is the same at 180×180
-  opengraph-image.tsx  1200×630 card (name, role, featured domains)
-  api/contact/      POST → Resend
-  sitemap.ts        sitemap
-  robots.ts         robots.txt
+app/
+  layout.tsx          root: boot script (js / loader / failsafe classes), fonts, theme, loader, Lenis, nav, footer, palette, cursor, JSON-LD
+  page.tsx            Hero → Work → Experience → About → Skills → Education & Awards → Contact
+  globals.css         tokens, loader, cursor, work-list blend rules, brand cards, reduced motion
+  fonts/              self-hosted woff2 (site) + woff (OG image) + OFL licences
+  icon.svg, apple-icon.png, opengraph-image.tsx, api/contact/, sitemap.ts, robots.ts
 components/
-  showcase.tsx      intro (server) handed to work-index
-  work-index.tsx    client: domain list + sticky preview; lazy-loads the other previews after idle
-  section.tsx       <Section name="…"> wrapper (title column + content) and the shared `metaRow` grid
-  sections/         Experience, About, Skills, Education, Awards, Contact (+ contact-form)
-  nav.tsx           sticky header, active-section tracking, menu/search trigger
-  command-palette.tsx  ⌘K / Ctrl K dialog (combobox + listbox); also the mobile menu
-  theme-toggle.tsx, toaster.tsx, footer.tsx, theme-provider.tsx
-content/
-  profile.ts        SOURCE OF TRUTH for name/role/links/bio. Import this anywhere instead of hard-coding.
-  experience.ts     work history (Navana, Prothom Alo, Nassa, Wizdoor)
-  projects.ts       every site in the domain index, with `featured` and `image`
-  skills.ts         grouped skill categories from CV
-  awards.ts         awards + activities
-  education.ts      education history
+  hero.tsx            kinetic name + entrance (waits for the loader) + CTAs
+  section.tsx         <Section name="…"> with a display title that splits in on scroll
+  motion/             preloader, smooth-scroll (Lenis), cursor, magnetic, reveal (SplitReveal, ScrubWords, MediaReveal, FadeUp, ScrollLine), marquee
+  webgl/flow-field.tsx  hero shader
+  work/               work-list (rows + hover handling), hover-media (WebGL class), brand-card (DOM)
+  sections/           work, experience, about, skills, education-awards, contact (+ contact-form)
+  nav.tsx, footer.tsx, local-time.tsx, command-palette.tsx, theme-toggle.tsx, toaster.tsx, theme-provider.tsx
+content/              profile, experience, projects (with `image` or `brand`), skills, awards, education
 lib/
-  sections.ts       section ids/titles + page and nav order (used by page, nav and palette)
-  domain.ts         hostOf / splitHost helpers for showing domains
-  fonts.ts          next/font/local setup
-  cn.ts             clsx + tailwind-merge helper
-  seo.ts            SEO helpers, JSON-LD builders
-  contact.ts        zod schema shared by the form and the API route
-public/             portrait.webp, me.jpg, resume.pdf, work/{slug}.webp screenshots
-deploy/             PM2 ecosystem + nginx + deploy script + README (fallback only)
+  motion.ts           app-ready signal, reduced-motion / fine-pointer checks, scrollToSection, colour tokens for shaders
+  gsap.ts             registers ScrollTrigger, SplitText, useGSAP once
+  gl.ts               WebGL helpers + simplex noise GLSL
+  brand-card.ts       paints a brand card to a canvas (WebGL texture)
+  sections.ts, domain.ts, fonts.ts, cn.ts, seo.ts, contact.ts
+public/               portrait.webp, me.jpg, resume.pdf, work/*.webp (Navana screenshots)
+deploy/               PM2 ecosystem + nginx + deploy script + README (fallback only)
 ```
 
 ## Phase tracker
-Phases are explicit so sessions stay scoped. Move work to the next phase if it would blow the budget.
+**Phase 1 — Foundation:** done. **Phase 2 — Content systems:** done (blog and RSS removed). **Phase 3 — Deploy:** superseded by Vercel; `deploy/` kept as a fallback.
 
-**Phase 1 — Foundation:** done.
-
-**Phase 2 — Content systems (done, minus blog):**
-- ~~MDX blog~~ — removed; no admin/CMS planned, owner doesn't want to maintain MDX manually either.
-- Contact form → `/api/contact` → Resend ✓
-- Dynamic OG image for `/` ✓
-- ~~RSS feed~~ — removed with blog.
-
-**Phase 3 — Deploy:** superseded by Vercel. The PM2/nginx files in `deploy/` remain as a fallback.
-
-**Phase 4 — Redesign (Nov 2026):** done. Replaced the terminal look with "Delta night" (above): domain index with live-site screenshots, local fonts, new OG image and icons. No content was added; every string comes from `content/*.ts`.
+**Phase 4 — Redesign (Nov 2026):** done in two steps. A first, quiet version was rejected by the owner as too plain; the current version is the animated one described above. No content was added; every string comes from `content/*.ts`.
 
 ## Conventions
 
-**Components.** Default to **React Server Components**. Only mark `"use client"` on components that genuinely need interactivity (theme toggle, nav tracking, work index, palette, contact form). Server-rendered parts can be passed into client components as props (see `showcase.tsx`).
+**Components.** Default to **React Server Components**. Mark `"use client"` only where needed (motion, WebGL, nav tracking, palette, form). Client motion components take server-rendered children.
 
-**Imports.** Use the `@/*` alias (configured in `tsconfig.json`).
+**Motion code.** Use `useGSAP` (from `lib/gsap.ts`) so tweens and ScrollTriggers are reverted on unmount. Check `prefersReducedMotion()` first in every effect. Anything visible before hydration that will animate needs a CSS pre-hide gated on `html.js:not([data-ready="true"])` plus the same start state in GSAP (set `y: 0` alongside `yPercent` so GSAP doesn't absorb the CSS transform).
 
-**Content edits.** All copy lives in `content/*.ts`. Don't hard-code names/dates/links in components — pull from the data files. This is how the site gets edited later without re-finding everywhere a string appears. Section names live in `lib/sections.ts`.
+**WebGL.** WebGL1, GLSL 100. Uniforms shared by vertex and fragment shaders need the same declared precision. Render loops go through `gsap.ticker` and must stop when nothing is visible.
 
-**Layout.** Use the `.page` class for the page container (max width + side padding). Sections use `<Section name="…">`; rows inside them use `metaRow` (a narrow column for dates/years/labels, then content). Keep reading text under ~70ch.
+**Imports.** Use the `@/*` alias.
 
-**Styles.** Tailwind utilities with the tokens above (`bg-bg`, `bg-raised`, `border-line`, `text-fg`, `text-muted`, `bg-accent text-accent-fg`). Shared classes in `globals.css`: `.page`, `.btn` + `.btn-primary` / `.btn-quiet`, `.link`, `.tnum`.
+**Content edits.** All copy lives in `content/*.ts`; section names in `lib/sections.ts`. Don't hard-code names/dates/links in components.
 
-**Project screenshots.** `public/work/{slug}.webp`, 1496×801 (the first screen of the live site at 1512×801), cropped to remove cookie banners. Photos of people on news sites are blurred before saving. Static files are served with an immutable one-year cache, so **give a replaced screenshot a new filename** and update `image` in `content/projects.ts`.
+**Layout.** `.page` for the page container. Sections use `<Section name="…">`.
 
-**Accessibility.** All interactive components keyboard-navigable; visible focus ring (`:focus-visible`, jute). The desktop preview is `aria-hidden` because the list carries the same facts. Hidden-on-desktop taglines use `lg:sr-only`, not `hidden`, so screen readers still get them. `prefers-reduced-motion` respected.
+**Project screenshots.** Static files are cached immutably for a year, so **give a replaced screenshot a new filename** and update `image` in `content/projects.ts`.
 
-**SEO.** Every route exports `metadata` (or `generateMetadata`). Use `lib/seo.ts` helpers to build consistent OG/Twitter cards. Canonical URL is always `https://nurul.com.bd/...`.
+**Accessibility.** Keyboard reachable everything; jute focus ring. Decorative motion layers (shader, previews, marquee, cursor) are `aria-hidden`; the scroll-lit bio has a plain screen-reader copy. Run axe in both themes after visual changes (0 violations at last check).
+
+**SEO.** Every route exports `metadata`. Canonical URL is always `https://nurul.com.bd/...`.
 
 ## What NOT to do
-- Don't add a CMS / admin panel.
-- Don't reintroduce the blog (routes, MDX, RSS) without an explicit ask — it was deliberately removed.
-- Don't add an animation library for effects CSS can do; keep motion to the single load moment.
+- Don't add a CMS / admin panel, or reintroduce the blog without an explicit ask.
+- Don't add three.js or another 3D library for effects the raw WebGL code already covers.
+- Don't ship a motion feature without its reduced-motion and touch behaviour.
+- Don't put screenshots of news pages (photos of people) or copied logos in `public/`.
 - Don't load fonts from Google at runtime or build time.
 - Don't add tests for this project (personal site, low blast radius). Type-check is the safety net.
 - Don't change canonical domain or deploy target without updating this file.

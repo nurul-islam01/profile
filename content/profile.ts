@@ -5,6 +5,7 @@ export const profile = {
   shortRole: "Tech Lead",
   company: "Navana Group",
   location: "Dhaka, Bangladesh",
+  timeZone: "Asia/Dhaka",
   email: "nurul.islam3f@gmail.com",
   phone: "+880 1727 946 384",
   headline: "Building scalable web platforms — currently leading engineering at Navana Group.",

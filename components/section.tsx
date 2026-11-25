@@ -1,27 +1,38 @@
 import { sections, type SectionKey } from "@/lib/sections";
+import { SplitReveal } from "@/components/motion/reveal";
+import { cn } from "@/lib/cn";
 
 /**
- * Page section on the shared grid: title in a narrow left column (sticky on
- * desktop), content on the right. Section ids and titles come from lib/sections.
+ * Page section with a display-size title whose letters rise in on scroll.
+ * Ids and titles come from lib/sections.ts.
  */
-export function Section({ name, children }: { name: SectionKey; children: React.ReactNode }) {
+export function Section({
+  name,
+  children,
+  aside,
+  className,
+}: {
+  name: SectionKey;
+  children: React.ReactNode;
+  /** Small text at the right end of the title row (e.g. a count). */
+  aside?: React.ReactNode;
+  className?: string;
+}) {
   const { id, title } = sections[name];
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="page">
-      <div className="grid gap-x-12 gap-y-8 border-t border-line py-16 sm:py-20 lg:grid-cols-[12rem_minmax(0,1fr)] lg:py-24">
-        <div>
-          <h2
-            id={`${id}-title`}
-            className="text-2xl font-bold leading-tight tracking-tight lg:sticky lg:top-24"
-          >
-            {title}
-          </h2>
-        </div>
-        <div className="min-w-0">{children}</div>
+    <section id={id} aria-labelledby={`${id}-title`} className={cn("page py-24 sm:py-32 lg:py-40", className)}>
+      <div className="mb-12 flex items-end justify-between gap-6 lg:mb-20">
+        <SplitReveal
+          as="h2"
+          type="chars"
+          id={`${id}-title`}
+          className="text-[clamp(3.4rem,11.5vw,11rem)] font-extrabold leading-[0.82] tracking-[-0.055em]"
+        >
+          {title}
+        </SplitReveal>
+        {aside ? <div className="tnum shrink-0 pb-[0.6em] text-[0.95rem] text-muted">{aside}</div> : null}
       </div>
+      {children}
     </section>
   );
 }
-
-/** Two-column row inside a section: a narrow meta column (dates, years, a label) and the content. */
-export const metaRow = "grid gap-x-10 gap-y-2 md:grid-cols-[10rem_minmax(0,1fr)]";

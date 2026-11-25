@@ -2,7 +2,7 @@
 
 Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana Group.
 
-Built with Next.js 15 (App Router) + TypeScript + Tailwind CSS. Opens on an index of the live sites he has built, with a screenshot preview of each. SEO-first. Deployed on Vercel.
+Built with Next.js 15 (App Router) + TypeScript + Tailwind CSS, animated with GSAP, Lenis and hand-written WebGL. SEO-first, reduced-motion friendly. Deployed on Vercel.
 
 > **Working with AI?** Read [`CLAUDE.md`](./CLAUDE.md) first — it has locked decisions, directory conventions, and the phase plan.
 
@@ -29,7 +29,7 @@ All copy is in `content/*.ts` so edits are one file away:
 
 - `content/profile.ts` — name, role, bio, socials (**source of truth**, imported everywhere)
 - `content/experience.ts` — work history
-- `content/projects.ts` — every site in the work index (screenshots in `public/work/`)
+- `content/projects.ts` — every site in the work list (Navana screenshots in `public/work/`, brand colours for the news sites)
 - `content/skills.ts` — grouped skill tree
 - `content/awards.ts` — awards & activities
 - `content/education.ts` — education
@@ -52,7 +52,7 @@ CONTACT_FROM_EMAIL=contact@nurul.com.bd
 - **Phase 1 (done):** scaffold, content, all home-page sections, SEO basics, sitemap/robots, JSON-LD
 - **Phase 2 (done):** Resend contact form, dynamic OG image (the blog was removed)
 - **Phase 3:** superseded by Vercel; `deploy/` keeps an nginx + PM2 fallback
-- **Phase 4 (done, Nov 2026):** redesign — work index with live-site screenshots, self-hosted fonts
+- **Phase 4 (done, Nov 2026):** redesign — kinetic hero over a WebGL shader, WebGL hover previews for every site, scroll animation throughout, self-hosted fonts
 
 See [`PLAN.md`](./PLAN.md) for the original task list.
 

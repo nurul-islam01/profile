@@ -16,6 +16,8 @@
   --accent: 143 97 0;      /* #8F6100  jute, darkened for contrast on light */
   --accent-fg: 255 255 255;
   --danger: 180 35 24;     /* #B42318 */
+  --faint: 128 136 150;    /* #808896  dimmest text that still clears 3:1 at display sizes */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   color-scheme: light;
 }
 
@@ -28,14 +30,15 @@
   --accent: 227 178 76;    /* #E3B24C  jute */
   --accent-fg: 15 22 38;
   --danger: 255 150 140;   /* #FF968C */
+  --faint: 93 106 133;     /* #5D6A85 */
   color-scheme: dark;
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* Lenis does the smoothing; native smooth scrolling would fight it. */
+    scroll-behavior: auto;
     scroll-padding-top: 5rem;
-    scrollbar-gutter: stable;
     -webkit-text-size-adjust: 100%;
   }
   body {
@@ -65,7 +68,7 @@
     @apply mx-auto w-full max-w-page px-5 sm:px-8 lg:px-10;
   }
   .btn {
-    @apply inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md px-5 text-[0.95rem] font-semibold transition-colors;
+    @apply inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-[0.95rem] font-semibold transition-colors;
   }
   .btn-primary {
     @apply bg-accent text-accent-fg hover:bg-accent/90;
@@ -79,11 +82,222 @@
   .link {
     @apply underline decoration-line underline-offset-[0.2em] transition-colors hover:decoration-fg;
   }
+  /* Large link whose underline wipes away on hover. */
+  .big-link {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
+    padding-bottom: 0.12em;
+    transition: background-size 0.7s var(--ease-out-expo);
+  }
+  .big-link:hover {
+    background-position: 100% 100%;
+    background-size: 0% 2px;
+  }
 }
 
+/* ── Lenis (from lenis/dist/lenis.css) ─────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ── Loader ────────────────────────────────────────────────────────────── */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+  clip-path: inset(0 0 0 0);
+}
+html.js:not(.no-preload) .preloader {
+  display: block;
+}
+html.is-loading {
+  overflow: hidden;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.hero-name {
+  font-weight: 560;
+}
+/* Matches the GSAP start state so nothing flashes before the entrance. */
+html.js:not([data-ready="true"]) .kchar {
+  transform: translateY(118%);
+}
+/* The supporting copy only waits when the loader runs; otherwise it is there at
+   first paint (it is the largest text on phones, i.e. the LCP element). */
+html.js:not(.no-preload):not([data-ready="true"]) [data-hero-reveal] {
+  opacity: 0;
+}
+
+/* ── Custom cursor ─────────────────────────────────────────────────────── */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  pointer-events: none;
+  border-radius: 9999px;
+  mix-blend-mode: difference;
+  opacity: 0;
+  visibility: hidden;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: #fff;
+  transition: opacity 0.2s;
+}
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1.5px solid #fff;
+}
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+html.has-cursor.cursor-native,
+html.has-cursor.cursor-native * {
+  cursor: auto !important;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select {
+  cursor: text !important;
+}
+
+/* ── Work list ─────────────────────────────────────────────────────────── */
+/* Rules sit below the floating preview (which is at z-index -10). */
+.work-rows,
+.work-row {
+  position: relative;
+}
+.work-row::before,
+.work-rows::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgb(var(--line));
+  z-index: -20;
+}
+.work-row::before {
+  top: 0;
+}
+.work-rows::after {
+  bottom: 0;
+}
+.work-row .row-inner {
+  transition: color 0.45s ease;
+}
+.work-row .row-sub {
+  color: rgb(var(--muted));
+  transition: color 0.45s ease;
+}
+.work-row .row-name > span:first-child {
+  transition: transform 0.8s var(--ease-out-expo);
+}
+.work-row a:hover .row-name > span:first-child {
+  transform: translateX(0.16em);
+}
+.work-row .row-arrow {
+  opacity: 0;
+  transform: translate(-0.3em, 0.3em);
+  transition: opacity 0.35s ease, transform 0.7s var(--ease-out-expo);
+}
+.work-row a:hover .row-arrow,
+.work-row a:focus-visible .row-arrow {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: none) {
+  .work-row .row-arrow {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Inline images only where the hover previews can't run. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .work-list:not([data-media="fallback"]) .row-media {
+    display: none;
+  }
+}
+/* With WebGL previews (dark theme), rows invert against whatever passes beneath them. */
+.dark .work-list[data-media="gl"] .row-inner {
+  color: #fff;
+  mix-blend-mode: difference;
+}
+.dark .work-list[data-media="gl"] .row-sub {
+  color: rgb(255 255 255 / 0.55);
+}
+.dark .work-list[data-media="gl"]:has(.work-row:hover) .row-inner {
+  color: rgb(255 255 255 / 0.3);
+}
+.dark .work-list[data-media="gl"]:has(.work-row:hover) .row-sub {
+  color: rgb(255 255 255 / 0.2);
+}
+.dark .work-list[data-media="gl"] .work-row:hover .row-inner {
+  color: #fff;
+}
+.dark .work-list[data-media="gl"] .work-row:hover .row-sub {
+  color: rgb(255 255 255 / 0.6);
+}
+/* Light theme: plain colours, the other rows fade back while one is hovered. */
+html:not(.dark) .work-list[data-media="gl"]:has(.work-row:hover) .row-inner {
+  color: rgb(var(--fg) / 0.32);
+}
+html:not(.dark) .work-list[data-media="gl"] .work-row:hover .row-inner {
+  color: rgb(var(--fg));
+}
+
+/* ── Scroll-lit paragraph: words go from faint to full as --p runs 0 → 1 ─ */
+.scrub-word {
+  color: color-mix(in srgb, rgb(var(--fg)) calc(var(--p, 1) * 100%), rgb(var(--faint)));
+}
+
+/* ── Brand cards (news sites shown by name and colour) ─────────────────── */
+.brand-card {
+  container-type: inline-size;
+}
+.brand-card-glow {
+  background: radial-gradient(
+    circle at 72% 22%,
+    color-mix(in srgb, var(--brand-accent) 48%, transparent),
+    transparent 52%
+  );
+  animation: brand-glow 11s ease-in-out infinite alternate;
+}
+@keyframes brand-glow {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-12%, 9%, 0) scale(1.15);
+  }
+}
+
+/* ── Reduced motion: everything is simply there ────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  html.js .kchar {
+    transform: none !important;
+  }
+  html.js [data-hero-reveal] {
+    opacity: 1 !important;
   }
   *,
   *::before,

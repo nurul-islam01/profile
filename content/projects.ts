@@ -7,8 +7,14 @@ export type Project = {
   role: string;
   stack: string[];
   featured?: boolean;
-  /** First screen of the live site, 1496×801 webp in /public/work. Photos on news sites are blurred. */
-  image: string;
+  /** First screen of the live site: 1496×801 webp in /public/work. */
+  image?: string;
+  /**
+   * Sites shown as a typographic card instead of a screenshot (the news sites,
+   * whose first screens are full of photos of people). Colours are taken from
+   * each site's own header and logo.
+   */
+  brand?: { bg: string; fg: string; accent: string };
 };
 
 export const projects: Project[] = [
@@ -104,7 +110,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "PostgreSQL", "Redis", "Elasticsearch", "Cloudflare"],
     featured: true,
-    image: "/work/prothom-alo.webp",
+    brand: { bg: "#FFFFFF", fg: "#141414", accent: "#E84D22" },
   },
   {
     slug: "kishor-alo",
@@ -115,7 +121,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
-    image: "/work/kishor-alo.webp",
+    brand: { bg: "#F5C001", fg: "#1B1B1B", accent: "#EA5024" },
   },
   {
     slug: "biggan-chinta",
@@ -126,7 +132,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
-    image: "/work/biggan-chinta.webp",
+    brand: { bg: "#3681BC", fg: "#FFFFFF", accent: "#CE573F" },
   },
   {
     slug: "bondhushava",
@@ -137,7 +143,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
-    image: "/work/bondhushava.webp",
+    brand: { bg: "#83438D", fg: "#FFFFFF", accent: "#59B1DF" },
   },
   {
     slug: "prothom-alo-trust",
@@ -147,7 +153,7 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
-    image: "/work/prothom-alo-trust.webp",
+    brand: { bg: "#E54D23", fg: "#FFFFFF", accent: "#2B2B2B" },
   },
   {
     slug: "nagorik-songbad",
@@ -157,7 +163,7 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
-    image: "/work/nagorik-songbad.webp",
+    brand: { bg: "#5DB9B5", fg: "#0E2B2A", accent: "#FFFFFF" },
   },
   {
     slug: "chironton-71",
@@ -167,6 +173,6 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
-    image: "/work/chironton-71.webp",
+    brand: { bg: "#2B2B2B", fg: "#F4EFE6", accent: "#BF4531" },
   },
 ];

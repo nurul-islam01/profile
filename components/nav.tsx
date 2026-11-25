@@ -18,9 +18,27 @@ export function Nav() {
   const onHome = pathname === "/";
   const [active, setActive] = React.useState<string | null>(null);
   const [isMac, setIsMac] = React.useState(true);
+  const [scrolled, setScrolled] = React.useState(false);
+  const [hidden, setHidden] = React.useState(false);
 
   React.useEffect(() => {
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
+
+  // Transparent over the hero; tucks away while scrolling down, returns on the way up.
+  React.useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      if (Math.abs(y - last) > 6) {
+        setHidden(y > last && y > window.innerHeight * 0.6);
+        last = y;
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Track the section crossing the upper third of the viewport.
@@ -45,7 +63,12 @@ export function Nav() {
   }, [onHome]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/85 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70">
+    <header
+      data-scrolled={scrolled}
+      data-hidden={hidden}
+      onFocusCapture={() => setHidden(false)}
+      className="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[transform,background-color,border-color] duration-500 ease-out data-[hidden=true]:-translate-y-full data-[scrolled=true]:border-line/60 data-[scrolled=true]:bg-bg/75 data-[scrolled=true]:backdrop-blur-md"
+    >
       <div className="page flex h-16 items-center gap-6">
         <Link href="/" className="shrink-0 text-[1.0625rem] font-bold tracking-tight">
           {brand}
