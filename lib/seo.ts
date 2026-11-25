@@ -112,7 +112,6 @@ export function personJsonLd() {
     sameAs: [
       profile.socials.github,
       profile.socials.linkedin,
-      profile.socials.mirror,
     ],
     knowsAbout: [...profile.knowsAbout],
     alumniOf: {

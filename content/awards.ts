@@ -21,6 +21,11 @@ export const awards: Award[] = [
     year: "2014",
   },
   {
+    title: "Certification: Mobile Application Development (Android)",
+    year: "2018",
+    org: "BASIS Institute of Technology & Management (BITM)",
+  },
+  {
     title: "Fire Fighting, Fire Prevention, Rescue and First Aid Training",
     org: "Fire Service & Civil Defence Directorate",
   },

@@ -31,14 +31,14 @@ export const experience: Role[] = [
   },
   {
     id: "e4f5g6h",
-    title: "Web Developer",
+    title: "Software Engineer",
     company: "Prothom Alo",
     location: "Karwan Bazar, Dhaka",
     start: "Jul 2021",
     end: "Jun 2025",
     highlights: [
       "Developed and maintained web products for Bangladesh's largest circulated newspaper using the Quintype/Bold CMS and Malibu framework.",
-      "Built performant frontend experiences with React and Next.js, optimizing for SEO and Core Web Vitals on a platform serving 6.6M+ daily readers.",
+      "Built performant frontend experiences with React and Next.js, optimizing for SEO and Core Web Vitals on a news platform with 10M+ monthly online users.",
       "Implemented SSR pipelines and custom Node.js services integrated with the Quintype API ecosystem.",
       "Delivered features including live blogs, story templates, collection pages, and subscription flows.",
       "Worked with GA4, Chartbeat, Google Publisher Tag, DFP, Cloudflare, AWS S3, and CDN integrations.",
@@ -48,10 +48,10 @@ export const experience: Role[] = [
   },
   {
     id: "i7j8k9l",
-    title: "Executive (Developer)",
+    title: "Software Engineer",
     company: "Nassa Group",
     location: "Dhaka, Bangladesh",
-    start: "Nov 2019",
+    start: "Dec 2019",
     end: "Jun 2021",
     highlights: [
       "Developed 5+ Android apps (Java) and 4+ web applications using Angular, React, and Express.js.",

@@ -7,7 +7,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 sm:flex-row sm:items-center sm:justify-between">
         <p>
           <span className="text-terminal-prompt">#</span>{" "}
-          © {year} {profile.name}. Built with Next.js · Deployed on Ubuntu + nginx.
+          © {year} {profile.name}. Built with Next.js · Deployed on Vercel.
         </p>
         <p>
           <a className="link-underline" href={profile.socials.github}>github</a>{" · "}

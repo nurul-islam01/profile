@@ -15,8 +15,8 @@ Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana 
 | Visual style | **Terminal / dev-tool aesthetic.** Mono primary font (JetBrains Mono), prompt-style section headers, `git log` / `tree` / `cat` motifs. Don't drift into generic-gradient-hero territory. |
 | Blog | **Removed.** No blog routes, no MDX pipeline, no `content/posts/`. Don't reintroduce without explicit ask. |
 | Contact form | Real backend via **Resend** (`/api/contact`). Not mailto. Env vars: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`. |
-| Deploy target | **Ubuntu server with nginx** as reverse proxy. `next start` managed by **PM2** (process name: `nurul`, config: `deploy/ecosystem.config.cjs`). NOT Vercel, NOT cPanel, NOT systemd. |
-| Canonical domain | **`nurul.com.bd`**. `nurul.dev` 301-redirects to it at the nginx layer. |
+| Deploy target | **Vercel** (project `profile`): pushes to `main` deploy to production. `nurul.com.bd` + `www` point at Vercel via Cloudflare DNS (grey cloud). The `deploy/` folder keeps the earlier Ubuntu + nginx + PM2 setup as a fallback; it is not what serves the site today. |
+| Canonical domain | **`nurul.com.bd`**. `nurul.dev` lapsed in Nov 2026, so it is no longer linked anywhere (not in `sameAs`, not in the README). |
 | SEO | First-class. Metadata API, sitemap, robots, JSON-LD Person/WebSite schema, dynamic OG images via `next/og`. |
 | Admin panel | None. Content is in TypeScript files (`content/*.ts`). |
 

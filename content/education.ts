@@ -14,7 +14,7 @@ export const education: Education[] = [
   },
   {
     degree: "Higher Secondary Certificate (HSC) — Science",
-    institution: "Altaxer Rahaman College, Bhola",
+    institution: "Altazer Rahaman College, Bhola",
     board: "Board of Intermediate and Secondary Education, Barisal",
     year: "2012",
   },
