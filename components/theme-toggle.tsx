@@ -10,7 +10,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
-  const isDark = resolvedTheme === "dark";
+  const isDark = !mounted || resolvedTheme === "dark";
 
   return (
     <button
@@ -18,15 +18,14 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
-        "inline-flex h-9 w-9 items-center justify-center rounded-md border text-terminal-muted",
-        "hover:text-terminal-fg hover:bg-terminal-surface transition-colors",
+        "inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-raised hover:text-fg",
         className,
       )}
     >
       {mounted ? (
-        isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />
+        isDark ? <Sun aria-hidden="true" className="h-[1.1rem] w-[1.1rem]" /> : <Moon aria-hidden="true" className="h-[1.1rem] w-[1.1rem]" />
       ) : (
-        <span className="h-4 w-4" />
+        <span className="h-[1.1rem] w-[1.1rem]" />
       )}
     </button>
   );

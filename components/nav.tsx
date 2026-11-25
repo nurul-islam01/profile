@@ -3,107 +3,110 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Download, Menu, Search } from "lucide-react";
 import { profile } from "@/content/profile";
+import { sections, navOrder } from "@/lib/sections";
+import { hostOf, splitHost } from "@/lib/domain";
 import { cn } from "@/lib/cn";
-import { ThemeToggle } from "./theme-toggle";
-import { CommandPaletteTrigger } from "./command-palette";
-import { StatusClock } from "./status-clock";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { openCommandPalette } from "@/components/command-palette";
 
-type NavLink = { href: string; label: string; sectionId?: string };
-
-const links: NavLink[] = [
-  { href: "/#about", label: "about", sectionId: "about" },
-  { href: "/#experience", label: "experience", sectionId: "experience" },
-  { href: "/#skills", label: "skills", sectionId: "skills" },
-  { href: "/#projects", label: "projects", sectionId: "projects" },
-  { href: "/#contact", label: "contact", sectionId: "contact" },
-];
+const [brand, brandSuffix] = splitHost(hostOf(profile.socials.website));
 
 export function Nav() {
   const pathname = usePathname();
   const onHome = pathname === "/";
-  const [activeSection, setActiveSection] = React.useState<string | null>(null);
+  const [active, setActive] = React.useState<string | null>(null);
+  const [isMac, setIsMac] = React.useState(true);
 
-  // Track which section is currently in view on the home page.
+  React.useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
+
+  // Track the section crossing the upper third of the viewport.
   React.useEffect(() => {
     if (!onHome) {
-      setActiveSection(null);
+      setActive(null);
       return;
     }
-    const ids = links.map((l) => l.sectionId).filter((x): x is string => Boolean(x));
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
-    if (sections.length === 0) return;
-
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>("main section[id]"));
+    if (nodes.length === 0) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        // Pick the topmost visible section as active.
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]?.target.id) {
-          setActiveSection(visible[0].target.id);
-        }
+        if (visible[0]) setActive(visible[0].target.id);
       },
-      {
-        // Trigger when a section's top hits ~30% from viewport top.
-        rootMargin: "-30% 0px -60% 0px",
-        threshold: 0,
-      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
     );
-    sections.forEach((s) => observer.observe(s));
+    nodes.forEach((n) => observer.observe(n));
     return () => observer.disconnect();
   }, [onHome]);
 
-  function isActive(link: NavLink): boolean {
-    if (!onHome) return false;
-    return link.sectionId === activeSection;
-  }
-
   return (
-    <header className="sticky top-0 z-40 border-b border-terminal-border bg-terminal-bg/80 backdrop-blur supports-[backdrop-filter]:bg-terminal-bg/60">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <Link
-          href="/"
-          className="font-mono text-sm font-medium tracking-tight text-terminal-fg transition-colors hover:text-terminal-prompt"
-        >
-          <span className="text-terminal-prompt">$</span> {profile.username}.com.bd
+    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/85 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70">
+      <div className="page flex h-16 items-center gap-6">
+        <Link href="/" className="shrink-0 text-[1.0625rem] font-bold tracking-tight">
+          {brand}
+          <span className="font-normal">{brandSuffix}</span>
         </Link>
-        <nav className="hidden md:block" aria-label="Primary">
-          <ul className="flex items-center gap-1 font-mono text-sm">
-            {links.map((l) => {
-              const active = isActive(l);
+
+        <nav aria-label="Primary" className="ml-auto hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {navOrder.map((key) => {
+              const { id, title } = sections[key];
+              const isActive = active === id;
               return (
-                <li key={l.href}>
+                <li key={id}>
                   <Link
-                    href={l.href}
-                    aria-current={active ? "page" : undefined}
+                    href={`/#${id}`}
+                    aria-current={isActive ? "true" : undefined}
                     className={cn(
-                      "group inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 transition-colors",
-                      active
-                        ? "bg-terminal-surface text-terminal-fg"
-                        : "text-terminal-muted hover:bg-terminal-surface hover:text-terminal-fg",
+                      "relative inline-flex h-9 items-center rounded-md px-3 text-[0.95rem] transition-colors",
+                      isActive ? "text-fg" : "text-muted hover:text-fg",
                     )}
                   >
+                    {title}
                     <span
-                      aria-hidden
+                      aria-hidden="true"
                       className={cn(
-                        "inline-block h-1.5 w-1.5 rounded-full transition-all",
-                        active ? "bg-terminal-prompt" : "bg-transparent group-hover:bg-terminal-border",
+                        "absolute inset-x-3 -bottom-[13px] h-0.5 rounded-full bg-accent transition-opacity",
+                        isActive ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {l.label}
                   </Link>
                 </li>
               );
             })}
           </ul>
         </nav>
-        <div className="flex items-center gap-3">
-          <StatusClock />
-          <CommandPaletteTrigger />
+
+        <div className="ml-auto flex items-center gap-1.5 lg:ml-0">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-haspopup="dialog"
+            aria-keyshortcuts="Meta+K Control+K"
+            className="inline-flex h-9 items-center gap-2 rounded-md px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-raised hover:text-fg"
+          >
+            <Menu aria-hidden="true" className="h-[1.1rem] w-[1.1rem] lg:hidden" />
+            <Search aria-hidden="true" className="hidden h-4 w-4 lg:block" />
+            <span className="lg:hidden">Menu</span>
+            <span className="hidden lg:inline">Search</span>
+            <kbd
+              aria-hidden="true"
+              className="hidden rounded border border-line px-1.5 py-px font-sans text-xs text-muted lg:inline"
+            >
+              {isMac ? "⌘K" : "Ctrl K"}
+            </kbd>
+          </button>
           <ThemeToggle />
+          <a href={profile.resumeUrl} download className="btn btn-quiet ml-1.5 h-9 px-3 text-sm">
+            <Download aria-hidden="true" className="h-4 w-4" />
+            <span className="sm:hidden">CV</span>
+            <span className="hidden sm:inline">Download CV</span>
+          </a>
         </div>
       </div>
     </header>

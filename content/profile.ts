@@ -15,7 +15,8 @@ export const profile = {
     website: "https://nurul.com.bd",
   },
   resumeUrl: "/resume.pdf",
-  photoUrl: "/me.jpg" as string | null,
+  // 4:5 crop of me.jpg, served through next/image
+  photoUrl: "/portrait.webp",
   // Used for OG / structured data
   jobTitle: "Deputy Manager & Tech Lead",
   knowsAbout: [

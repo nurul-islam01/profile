@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { contactSchema, type ContactInput } from "@/lib/contact";
 import { cn } from "@/lib/cn";
 
-export function ContactForm() {
+const control =
+  "mt-1.5 w-full rounded-md border bg-raised px-3.5 py-2.5 text-fg transition-colors placeholder:text-muted/70 hover:border-fg/30";
+
+export function ContactForm({ className }: { className?: string }) {
   const [submitting, setSubmitting] = useState(false);
   const {
     register,
@@ -42,76 +45,80 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 font-mono text-sm" noValidate>
-      <div>
-        <label htmlFor="contact-name" className="block text-xs uppercase tracking-wider text-terminal-muted">
-          <span className="text-terminal-prompt">$</span> name
-        </label>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className={cn("grid gap-5 sm:grid-cols-2", className)}>
+      <Field id="contact-name" label="Name" error={errors.name}>
         <input
           id="contact-name"
           autoComplete="name"
+          aria-invalid={errors.name ? true : undefined}
+          aria-describedby={errors.name ? "contact-name-error" : undefined}
           {...register("name")}
-          className={cn(
-            "mt-1 w-full rounded-md border bg-terminal-bg px-3 py-2 text-terminal-fg outline-none transition-colors focus:border-terminal-prompt",
-            errors.name ? "border-terminal-keyword" : "border-terminal-border"
-          )}
+          className={cn(control, errors.name ? "border-danger" : "border-line")}
         />
-        {errors.name ? (
-          <p className="mt-1 text-xs text-terminal-keyword">{errors.name.message}</p>
-        ) : null}
-      </div>
+      </Field>
 
-      <div>
-        <label htmlFor="contact-email" className="block text-xs uppercase tracking-wider text-terminal-muted">
-          <span className="text-terminal-prompt">$</span> email
-        </label>
+      <Field id="contact-email" label="Email" error={errors.email}>
         <input
           id="contact-email"
           type="email"
           autoComplete="email"
+          aria-invalid={errors.email ? true : undefined}
+          aria-describedby={errors.email ? "contact-email-error" : undefined}
           {...register("email")}
-          className={cn(
-            "mt-1 w-full rounded-md border bg-terminal-bg px-3 py-2 text-terminal-fg outline-none transition-colors focus:border-terminal-prompt",
-            errors.email ? "border-terminal-keyword" : "border-terminal-border"
-          )}
+          className={cn(control, errors.email ? "border-danger" : "border-line")}
         />
-        {errors.email ? (
-          <p className="mt-1 text-xs text-terminal-keyword">{errors.email.message}</p>
-        ) : null}
-      </div>
+      </Field>
 
-      <div>
-        <label htmlFor="contact-message" className="block text-xs uppercase tracking-wider text-terminal-muted">
-          <span className="text-terminal-prompt">$</span> message
-        </label>
+      <Field id="contact-message" label="Message" error={errors.message} className="sm:col-span-2">
         <textarea
           id="contact-message"
           rows={6}
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby={errors.message ? "contact-message-error" : undefined}
           {...register("message")}
-          className={cn(
-            "mt-1 w-full resize-y rounded-md border bg-terminal-bg px-3 py-2 text-terminal-fg outline-none transition-colors focus:border-terminal-prompt",
-            errors.message ? "border-terminal-keyword" : "border-terminal-border"
-          )}
+          className={cn(control, "resize-y", errors.message ? "border-danger" : "border-line")}
         />
-        {errors.message ? (
-          <p className="mt-1 text-xs text-terminal-keyword">{errors.message.message}</p>
-        ) : null}
-      </div>
+      </Field>
 
-      {/* Honeypot — hidden from real users */}
+      {/* Honeypot: hidden from people, filled in by bots */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor="contact-website">Website</label>
         <input id="contact-website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
       </div>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="inline-flex items-center gap-2 rounded-md border border-terminal-border bg-terminal-surface px-4 py-2 text-terminal-fg transition-colors hover:border-terminal-prompt disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        <span className="text-terminal-prompt">$</span>
-        {submitting ? "sending..." : "./send"}
-      </button>
+      <div className="sm:col-span-2">
+        <button type="submit" disabled={submitting} className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-60">
+          {submitting ? "Sending…" : "Send message"}
+        </button>
+      </div>
     </form>
+  );
+}
+
+function Field({
+  id,
+  label,
+  error,
+  className,
+  children,
+}: {
+  id: string;
+  label: string;
+  error?: FieldError;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={className}>
+      <label htmlFor={id} className="text-sm font-medium">
+        {label}
+      </label>
+      {children}
+      {error?.message ? (
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger">
+          {error.message}
+        </p>
+      ) : null}
+    </div>
   );
 }

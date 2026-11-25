@@ -2,104 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------- Terminal palette ---------- */
-
+/*
+  "Delta" palette — a deep river-night blue with a jute-gold accent.
+  Values are RGB channels so Tailwind opacity modifiers work.
+  Jute is used only for "you are here" and the primary action.
+*/
 :root {
-  /* Light terminal — paper-y, restrained */
-  --color-bg: #fafaf7;
-  --color-surface: #f3f2ec;
-  --color-border: #d9d6cc;
-  --color-fg: #1c1b1a;
-  --color-muted: #6b6862;
-  --color-prompt: #2563eb;     /* the `$` and path */
-  --color-accent: #15803d;     /* highlight / success */
-  --color-string: #b45309;
-  --color-number: #7c3aed;
-  --color-keyword: #be123c;
-  --color-comment: #6b6862;
-  --color-link: #1d4ed8;
+  --bg: 244 245 247;       /* #F4F5F7  day paper (cool, not cream) */
+  --raised: 255 255 255;   /* #FFFFFF */
+  --line: 217 222 231;     /* #D9DEE7 */
+  --fg: 17 26 44;          /* #111A2C  ink */
+  --muted: 88 100 121;     /* #586479 */
+  --accent: 143 97 0;      /* #8F6100  jute, darkened for contrast on light */
+  --accent-fg: 255 255 255;
+  --danger: 180 35 24;     /* #B42318 */
+  color-scheme: light;
 }
 
 .dark {
-  /* Dark terminal — GitHub-ish, not pure black */
-  --color-bg: #0d1117;
-  --color-surface: #161b22;
-  --color-border: #30363d;
-  --color-fg: #e6edf3;
-  --color-muted: #8b949e;
-  --color-prompt: #7ee787;     /* classic shell green */
-  --color-accent: #56d364;
-  --color-string: #a5d6ff;
-  --color-number: #ffa657;
-  --color-keyword: #ff7b72;
-  --color-comment: #8b949e;
-  --color-link: #79c0ff;
+  --bg: 15 22 38;          /* #0F1626  river night */
+  --raised: 22 32 54;      /* #162036 */
+  --line: 42 53 80;        /* #2A3550 */
+  --fg: 237 240 245;       /* #EDF0F5 */
+  --muted: 155 167 189;    /* #9BA7BD */
+  --accent: 227 178 76;    /* #E3B24C  jute */
+  --accent-fg: 15 22 38;
+  --danger: 255 150 140;   /* #FF968C */
+  color-scheme: dark;
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
   }
   body {
-    background-color: var(--color-bg);
-    color: var(--color-fg);
-    font-feature-settings: "ss01", "cv11";
-    -webkit-font-smoothing: antialiased;
+    @apply bg-bg font-sans text-fg antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.6;
     text-rendering: optimizeLegibility;
   }
   ::selection {
-    background-color: var(--color-prompt);
-    color: var(--color-bg);
+    background-color: rgb(var(--accent));
+    color: rgb(var(--accent-fg));
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 4px;
   }
   a {
-    color: var(--color-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
   }
 }
 
 @layer components {
-  .terminal-window {
-    @apply rounded-lg border bg-terminal-surface shadow-lg overflow-hidden;
-    border-color: var(--color-border);
+  /* One page grid for nav, sections and footer. */
+  .page {
+    @apply mx-auto w-full max-w-page px-5 sm:px-8 lg:px-10;
   }
-  .terminal-titlebar {
-    @apply flex items-center gap-2 px-4 py-2 border-b text-xs;
-    border-color: var(--color-border);
-    color: var(--color-muted);
+  .btn {
+    @apply inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md px-5 text-[0.95rem] font-semibold transition-colors;
   }
-  .terminal-dot {
-    @apply h-3 w-3 rounded-full;
+  .btn-primary {
+    @apply bg-accent text-accent-fg hover:bg-accent/90;
   }
-  .prompt-token {
-    color: var(--color-prompt);
+  .btn-quiet {
+    @apply border border-line text-fg hover:border-fg/40 hover:bg-raised;
   }
-  .string-token {
-    color: var(--color-string);
+  .tnum {
+    font-variant-numeric: tabular-nums;
   }
-  .keyword-token {
-    color: var(--color-keyword);
-  }
-  .comment-token {
-    color: var(--color-comment);
-    font-style: italic;
-  }
-  .link-underline {
-    @apply underline decoration-dotted underline-offset-4 transition-colors;
-  }
-  .link-underline:hover {
-    text-decoration-style: solid;
+  .link {
+    @apply underline decoration-line underline-offset-[0.2em] transition-colors hover:decoration-fg;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 }

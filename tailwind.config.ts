@@ -1,61 +1,52 @@
 import type { Config } from "tailwindcss";
-import typography from "@tailwindcss/typography";
+
+// Colors are CSS variables holding RGB channels (see app/globals.css) so
+// Tailwind's opacity modifiers work: `bg-bg/80`, `text-fg/45`, etc.
+const rgb = (name: string) => `rgb(var(${name}) / <alpha-value>)`;
 
 const config: Config = {
   darkMode: "class",
   content: [
-    "./app/**/*.{ts,tsx,mdx}",
+    "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
-    "./content/**/*.{ts,tsx,mdx}",
+    "./content/**/*.ts",
   ],
   theme: {
     extend: {
       fontFamily: {
-        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
       },
       colors: {
-        // GitHub-inspired terminal palette
-        terminal: {
-          bg: "var(--color-bg)",
-          surface: "var(--color-surface)",
-          border: "var(--color-border)",
-          fg: "var(--color-fg)",
-          muted: "var(--color-muted)",
-          prompt: "var(--color-prompt)",
-          accent: "var(--color-accent)",
-          string: "var(--color-string)",
-          number: "var(--color-number)",
-          keyword: "var(--color-keyword)",
-          comment: "var(--color-comment)",
-          link: "var(--color-link)",
+        bg: rgb("--bg"),
+        raised: rgb("--raised"),
+        line: rgb("--line"),
+        fg: rgb("--fg"),
+        muted: rgb("--muted"),
+        accent: rgb("--accent"),
+        "accent-fg": rgb("--accent-fg"),
+        danger: rgb("--danger"),
+      },
+      maxWidth: {
+        page: "78rem",
+      },
+      keyframes: {
+        rise: {
+          "0%": { opacity: "0", transform: "translateY(14px)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        reveal: {
+          "0%": { clipPath: "inset(0 0 100% 0 round 0.75rem)" },
+          "100%": { clipPath: "inset(0 0 0 0 round 0.75rem)" },
         },
       },
       animation: {
-        "caret-blink": "caret-blink 1s steps(1) infinite",
-        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
-      },
-      keyframes: {
-        "caret-blink": {
-          "0%, 50%": { opacity: "1" },
-          "51%, 100%": { opacity: "0" },
-        },
-        "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            "code::before": { content: '""' },
-            "code::after": { content: '""' },
-          },
-        },
+        rise: "rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both",
+        reveal: "reveal 0.95s 0.2s cubic-bezier(0.2, 0.7, 0.2, 1) both",
       },
     },
   },
-  plugins: [typography],
+  plugins: [],
 };
 
 export default config;

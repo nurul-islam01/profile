@@ -1,43 +1,40 @@
 import type { Metadata, Viewport } from "next";
-import { Toaster } from "sonner";
-import { fontMono, fontSans } from "@/lib/fonts";
+import { fontSans, fontSerif } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { CommandPalette } from "@/components/command-palette";
+import { Toaster } from "@/components/toaster";
 import { pageMetadata, personJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 export const metadata: Metadata = pageMetadata();
 
+// Every visitor starts in the dark theme, so the browser chrome matches it.
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafaf7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0d1117" },
-  ],
+  themeColor: "#0F1626",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${fontMono.variable} ${fontSans.variable}`}>
-      <body className="min-h-screen bg-terminal-bg text-terminal-fg antialiased">
+    <html lang="en" suppressHydrationWarning className={`${fontSans.variable} ${fontSerif.variable}`}>
+      <body className="min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          <a
+            href="#main"
+            className="btn btn-primary sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[70]"
+          >
+            Skip to content
+          </a>
           <Nav />
-          <main>{children}</main>
+          <main id="main" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
           <Footer />
           <CommandPalette />
-          <Toaster
-            theme="system"
-            position="bottom-right"
-            toastOptions={{
-              classNames: {
-                toast: "font-mono border border-terminal-border bg-terminal-surface text-terminal-fg",
-              },
-            }}
-          />
+          <Toaster />
         </ThemeProvider>
 
-        {/* JSON-LD: Person + WebSite */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}

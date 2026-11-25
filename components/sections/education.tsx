@@ -1,31 +1,22 @@
-import { SectionShell } from "@/components/terminal/section-shell";
+import { Section, metaRow } from "@/components/section";
 import { education } from "@/content/education";
+import { cn } from "@/lib/cn";
 
 export function Education() {
   return (
-    <SectionShell id="education" path="~/education" cmd="cat history.txt" title="Education">
-      <pre className="overflow-x-auto rounded-md border border-terminal-border bg-terminal-surface px-4 py-4 font-mono text-xs sm:text-sm leading-relaxed">
-        <code className="block whitespace-pre-wrap break-words">
-          <span className="text-terminal-comment"># reverse-chronological</span>
-          {"\n\n"}
-          {education.map((e, i) => (
-            <span key={i} className="block">
-              <span className="text-terminal-prompt">[{e.year}]</span>{" "}
-              <span className="text-terminal-fg font-semibold">{e.degree}</span>
-              {"\n        "}
-              <span className="text-terminal-muted">@ </span>
-              <span className="text-terminal-fg/90">{e.institution}</span>
-              {e.board && (
-                <>
-                  {"\n        "}
-                  <span className="text-terminal-comment">// {e.board}</span>
-                </>
-              )}
-              {i < education.length - 1 && "\n\n"}
-            </span>
-          ))}
-        </code>
-      </pre>
-    </SectionShell>
+    <Section name="education">
+      <ol className="divide-y divide-line">
+        {education.map((e) => (
+          <li key={e.degree} className={cn(metaRow, "py-5 first:pt-1 last:pb-0")}>
+            <p className="tnum text-[0.95rem] text-muted">{e.year}</p>
+            <div className="min-w-0">
+              <h3 className="font-semibold leading-snug">{e.degree}</h3>
+              <p className="mt-0.5 text-muted">{e.institution}</p>
+              {e.board ? <p className="text-sm text-muted">{e.board}</p> : null}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </Section>
   );
 }

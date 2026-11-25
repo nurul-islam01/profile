@@ -7,6 +7,8 @@ export type Project = {
   role: string;
   stack: string[];
   featured?: boolean;
+  /** First screen of the live site, 1496×801 webp in /public/work. Photos on news sites are blurred. */
+  image: string;
 };
 
 export const projects: Project[] = [
@@ -19,6 +21,7 @@ export const projects: Project[] = [
     role: "Tech Lead — architecture, build, infra",
     stack: ["Next.js", "Node.js", "MySQL", "MariaDB", "PostgreSQL", "AlmaLinux", "Apache"],
     featured: true,
+    image: "/work/navana.webp",
   },
   {
     slug: "navana-real-estate",
@@ -29,6 +32,7 @@ export const projects: Project[] = [
     role: "Tech Lead",
     stack: ["Next.js", "Node.js", "MySQL", "MariaDB", "PostgreSQL"],
     featured: true,
+    image: "/work/navana-real-estate.webp",
   },
   {
     slug: "gloria-jeans-bd",
@@ -39,6 +43,7 @@ export const projects: Project[] = [
     role: "Tech Lead",
     stack: ["Next.js", "Tailwind", "MySQL", "MariaDB", "PostgreSQL"],
     featured: true,
+    image: "/work/gloria-jeans-bd.webp",
   },
   {
     slug: "la-tarte-bd",
@@ -48,6 +53,7 @@ export const projects: Project[] = [
     org: "Navana Group",
     role: "Tech Lead",
     stack: ["Next.js", "Tailwind", "MySQL", "MariaDB", "PostgreSQL"],
+    image: "/work/la-tarte-bd.webp",
   },
   {
     slug: "navana-logistics",
@@ -57,6 +63,7 @@ export const projects: Project[] = [
     org: "Navana Group",
     role: "Tech Lead",
     stack: ["Next.js", "MySQL", "MariaDB", "PostgreSQL"],
+    image: "/work/navana-logistics.webp",
   },
   {
     slug: "navana-furniture",
@@ -66,6 +73,7 @@ export const projects: Project[] = [
     org: "Navana Group",
     role: "Tech Lead",
     stack: ["Next.js", "NestJS", "Prisma", "PostgreSQL"],
+    image: "/work/navana-furniture.webp",
   },
   {
     slug: "navana-cng",
@@ -75,6 +83,7 @@ export const projects: Project[] = [
     org: "Navana Group",
     role: "Tech Lead",
     stack: ["Next.js", "MySQL", "MariaDB", "PostgreSQL"],
+    image: "/work/navana-cng.webp",
   },
   {
     slug: "navana-engineering",
@@ -84,6 +93,7 @@ export const projects: Project[] = [
     org: "Navana Group",
     role: "Tech Lead",
     stack: ["Next.js", "MySQL", "MariaDB", "PostgreSQL"],
+    image: "/work/navana-engineering.webp",
   },
   {
     slug: "prothom-alo",
@@ -94,6 +104,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "PostgreSQL", "Redis", "Elasticsearch", "Cloudflare"],
     featured: true,
+    image: "/work/prothom-alo.webp",
   },
   {
     slug: "kishor-alo",
@@ -104,6 +115,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
+    image: "/work/kishor-alo.webp",
   },
   {
     slug: "biggan-chinta",
@@ -114,6 +126,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
+    image: "/work/biggan-chinta.webp",
   },
   {
     slug: "bondhushava",
@@ -124,6 +137,7 @@ export const projects: Project[] = [
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Malibu", "Cloudflare"],
     featured: true,
+    image: "/work/bondhushava.webp",
   },
   {
     slug: "prothom-alo-trust",
@@ -133,6 +147,7 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
+    image: "/work/prothom-alo-trust.webp",
   },
   {
     slug: "nagorik-songbad",
@@ -142,6 +157,7 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
+    image: "/work/nagorik-songbad.webp",
   },
   {
     slug: "chironton-71",
@@ -151,5 +167,6 @@ export const projects: Project[] = [
     org: "Prothom Alo",
     role: "Software Engineer (2021–2025)",
     stack: ["React", "Next.js", "Quintype/Bold", "Cloudflare"],
+    image: "/work/chironton-71.webp",
   },
 ];

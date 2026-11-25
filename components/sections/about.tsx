@@ -1,75 +1,47 @@
 import Image from "next/image";
-import { SectionShell } from "@/components/terminal/section-shell";
+import { Section, metaRow } from "@/components/section";
 import { profile } from "@/content/profile";
 
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-function Portrait() {
-  if (profile.photoUrl) {
-    return (
-      <Image
-        src={profile.photoUrl}
-        alt={profile.name}
-        width={240}
-        height={240}
-        className="h-full w-full object-cover"
-        priority
-      />
-    );
-  }
-  return (
-    <div className="flex h-full w-full items-center justify-center bg-terminal-surface">
-      <span className="font-mono text-5xl font-semibold text-terminal-prompt">
-        {initials(profile.name)}
-      </span>
-    </div>
-  );
-}
-
 export function About() {
-  return (
-    <SectionShell id="about" path="~/about" cmd="cat bio.md" title="About">
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-[160px_1fr] sm:gap-10">
-        {/* Portrait — terminal-window framed */}
-        <div className="mx-auto w-32 sm:mx-0 sm:w-40">
-          <div className="overflow-hidden rounded-md border border-terminal-border bg-terminal-surface shadow-sm">
-            <div className="flex items-center gap-1.5 border-b border-terminal-border px-2.5 py-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" aria-hidden />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" aria-hidden />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" aria-hidden />
-              <span className="ml-2 font-mono text-[10px] text-terminal-muted">~/me.jpg</span>
-            </div>
-            <div className="aspect-square">
-              <Portrait />
-            </div>
-          </div>
-        </div>
+  const facts: Array<{ label: string; value: React.ReactNode }> = [
+    { label: "Based in", value: profile.location },
+    { label: "Experience", value: "7+ years" },
+    { label: "Now", value: `${profile.shortRole}, ${profile.company}` },
+    {
+      label: "Email",
+      value: (
+        <a className="link" href={`mailto:${profile.email}`}>
+          {profile.email}
+        </a>
+      ),
+    },
+  ];
 
-        {/* Bio + metadata */}
-        <article className="max-w-none text-terminal-fg">
-          <p className="font-mono text-xs text-terminal-muted">
-            <span className="text-terminal-comment">-rw-r--r--</span>{" "}
-            <span>1 nurul nurul</span>{" "}
-            <span className="text-terminal-string">{Math.max(profile.bio.length, 240)}</span>{" "}
-            <span>bio.md</span>
-          </p>
-          <p className="mt-3 font-sans text-base leading-relaxed sm:text-lg">{profile.bio}</p>
-          <ul className="mt-5 grid grid-cols-1 list-none gap-y-1 p-0 font-mono text-sm text-terminal-muted sm:grid-cols-2">
-            <li><span className="text-terminal-prompt">›</span> {profile.location}</li>
-            <li><span className="text-terminal-prompt">›</span> {profile.email}</li>
-            <li><span className="text-terminal-prompt">›</span> {profile.company} · {profile.shortRole}</li>
-            <li><span className="text-terminal-prompt">›</span> 7+ years experience</li>
-          </ul>
-        </article>
+  return (
+    <Section name="about">
+      <div className={metaRow}>
+        <div className="mb-6 w-36 md:mb-0 md:w-full">
+          <Image
+            src={profile.photoUrl}
+            alt={`Portrait of ${profile.name}`}
+            width={768}
+            height={960}
+            sizes="(min-width: 768px) 10rem, 9rem"
+            className="aspect-[4/5] w-full rounded-lg border border-line object-cover"
+          />
+        </div>
+        <div className="min-w-0">
+          <p className="max-w-[60ch] font-serif text-[1.25rem] leading-[1.6] sm:text-[1.375rem]">{profile.bio}</p>
+          <dl className="mt-10 grid max-w-[44rem] gap-x-10 gap-y-6 sm:grid-cols-2">
+            {facts.map((f) => (
+              <div key={f.label}>
+                <dt className="text-sm text-muted">{f.label}</dt>
+                <dd className="mt-1 font-medium [overflow-wrap:anywhere]">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
-    </SectionShell>
+    </Section>
   );
 }

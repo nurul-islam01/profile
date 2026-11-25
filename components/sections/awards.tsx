@@ -1,33 +1,32 @@
-import { SectionShell } from "@/components/terminal/section-shell";
+import { Section, metaRow } from "@/components/section";
 import { awards } from "@/content/awards";
+import { cn } from "@/lib/cn";
 
 export function Awards() {
   return (
-    <SectionShell id="awards" path="~/awards" cmd="cat awards.log" title="Awards & Activities">
-      <pre className="overflow-x-auto rounded-md border border-terminal-border bg-terminal-surface px-4 py-4 font-mono text-xs sm:text-sm leading-relaxed">
-        <code className="block whitespace-pre-wrap break-words">
-          <span className="text-terminal-comment"># awards.log — entries: {awards.length}</span>
-          {"\n\n"}
-          {awards.map((a, i) => (
-            <span key={i} className="block">
-              <span className={a.highlight ? "text-terminal-accent" : "text-terminal-prompt"}>
-                {a.highlight ? "★" : "›"}
-              </span>{" "}
-              <span className={a.highlight ? "text-terminal-fg font-semibold" : "text-terminal-fg"}>
+    <Section name="awards">
+      <ul className="divide-y divide-line">
+        {awards.map((a) => (
+          <li key={a.title} className={cn(metaRow, "py-5 first:pt-1 last:pb-0")}>
+            {a.year ? (
+              <p className="tnum text-[0.95rem] text-muted">{a.year}</p>
+            ) : (
+              <span aria-hidden="true" className="hidden md:block" />
+            )}
+            <div className="min-w-0">
+              <h3
+                className={cn(
+                  "leading-snug",
+                  a.highlight ? "text-xl font-bold tracking-tight" : "font-semibold",
+                )}
+              >
                 {a.title}
-              </span>
-              {(a.year || a.org) && (
-                <span className="text-terminal-muted">
-                  {"\n  "}
-                  <span className="text-terminal-comment">// </span>
-                  {[a.org, a.year].filter(Boolean).join(" · ")}
-                </span>
-              )}
-              {i < awards.length - 1 && "\n\n"}
-            </span>
-          ))}
-        </code>
-      </pre>
-    </SectionShell>
+              </h3>
+              {a.org ? <p className="mt-0.5 text-muted">{a.org}</p> : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }

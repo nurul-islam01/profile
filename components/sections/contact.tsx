@@ -1,68 +1,57 @@
-import { SectionShell } from "@/components/terminal/section-shell";
-import { ContactForm } from "./contact-form";
+import { Section } from "@/components/section";
+import { ContactForm } from "@/components/sections/contact-form";
 import { profile } from "@/content/profile";
 
-type Item = { key: string; value: string; href: string | null };
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "");
 
-const items: Item[] = [
-  { key: "mail", value: profile.email, href: `mailto:${profile.email}` },
-  { key: "tel ", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
-  { key: "git ", value: "github.com/nurul-islam01", href: profile.socials.github },
-  { key: "in  ", value: "linkedin.com/in/nurul-islam01", href: profile.socials.linkedin },
-  { key: "loc ", value: profile.location, href: null },
+const details: Array<{ label: string; value: string; href?: string; external?: boolean }> = [
+  { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+  { label: "Phone", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
+  { label: "GitHub", value: bare(profile.socials.github), href: profile.socials.github, external: true },
+  { label: "LinkedIn", value: bare(profile.socials.linkedin), href: profile.socials.linkedin, external: true },
+  { label: "Location", value: profile.location },
 ];
 
 export function Contact() {
   return (
-    <SectionShell id="contact" path="~/contact" cmd="cat README.md" title="Contact">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
-        <div className="lg:col-span-3">
-          <pre className="font-mono text-sm leading-relaxed text-terminal-fg whitespace-pre-wrap break-words">
-            <code>
-              <span className="text-terminal-comment"># README.md</span>
-              {"\n"}
-              <span>Got an idea, a role, or a hard engineering problem?</span>
-              {"\n"}
-              <span>I read every message — best reached via the form below</span>
-              {"\n"}
-              <span>or at </span>
-              <a className="text-terminal-link link-underline" href={`mailto:${profile.email}`}>
-                {profile.email}
-              </a>
-              <span>.</span>
-              {"\n\n"}
-              <span className="text-terminal-muted">
-                <span className="text-terminal-prompt">›</span> typical response time:{" "}
-              </span>
-              <span className="text-terminal-accent">within 24 hours</span>
-            </code>
-          </pre>
-          <div className="mt-6">
-            <ContactForm />
-          </div>
+    <Section name="contact">
+      <div className="grid gap-x-12 gap-y-14 xl:grid-cols-[minmax(0,1fr)_16rem]">
+        <div className="min-w-0">
+          <p className="max-w-[20ch] text-balance text-[clamp(1.75rem,3.4vw,2.5rem)] font-bold leading-[1.1] tracking-tight">
+            Got an idea, a role, or a hard engineering problem?
+          </p>
+          <p className="mt-5 max-w-[52ch] font-serif text-[1.25rem] leading-relaxed text-muted">
+            I read every message — best reached via the form below or at{" "}
+            <a className="link text-fg" href={`mailto:${profile.email}`}>
+              {profile.email}
+            </a>
+            .
+          </p>
+          <p className="mt-2 text-muted">Typical response time: within 24 hours.</p>
+          <ContactForm className="mt-10 max-w-[44rem]" />
         </div>
 
-        <div className="lg:col-span-2">
-          <p className="mb-2 font-mono text-xs text-terminal-muted">
-            <span className="text-terminal-prompt">$</span> cat ~/.contact
-          </p>
-          <ul className="rounded-md border border-terminal-border bg-terminal-surface p-4 font-mono text-sm">
-            {items.map(({ key, value, href }) => (
-              <li key={key} className="flex items-baseline gap-3 py-1">
-                <span className="text-terminal-prompt">{key}</span>
-                <span className="text-terminal-muted">:</span>
-                {href ? (
-                  <a href={href} className="text-terminal-fg link-underline truncate">
-                    {value}
+        <dl className="space-y-5 xl:pt-2">
+          {details.map((d) => (
+            <div key={d.label}>
+              <dt className="text-sm text-muted">{d.label}</dt>
+              <dd className="mt-0.5 font-medium [overflow-wrap:anywhere]">
+                {d.href ? (
+                  <a
+                    className="link"
+                    href={d.href}
+                    {...(d.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  >
+                    {d.value}
                   </a>
                 ) : (
-                  <span className="text-terminal-fg truncate">{value}</span>
+                  d.value
                 )}
-              </li>
-            ))}
-          </ul>
-        </div>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </SectionShell>
+    </Section>
   );
 }

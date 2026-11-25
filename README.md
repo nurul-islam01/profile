@@ -2,7 +2,7 @@
 
 Personal portfolio for **Nurul Islam** — Deputy Manager & Tech Lead at Navana Group.
 
-Built with Next.js 15 (App Router) + TypeScript + Tailwind CSS. Terminal-style aesthetic. SEO-first. Deploys to Ubuntu + nginx.
+Built with Next.js 15 (App Router) + TypeScript + Tailwind CSS. Opens on an index of the live sites he has built, with a screenshot preview of each. SEO-first. Deployed on Vercel.
 
 > **Working with AI?** Read [`CLAUDE.md`](./CLAUDE.md) first — it has locked decisions, directory conventions, and the phase plan.
 
@@ -19,7 +19,7 @@ npm run dev          # http://localhost:3000
 | --- | --- |
 | `npm run dev` | Dev server with hot reload |
 | `npm run build` | Production build |
-| `npm run start` | Serve production build (used by systemd in production) |
+| `npm run start` | Serve production build |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | Next.js ESLint |
 
@@ -29,7 +29,7 @@ All copy is in `content/*.ts` so edits are one file away:
 
 - `content/profile.ts` — name, role, bio, socials (**source of truth**, imported everywhere)
 - `content/experience.ts` — work history
-- `content/projects.ts` — featured projects
+- `content/projects.ts` — every site in the work index (screenshots in `public/work/`)
 - `content/skills.ts` — grouped skill tree
 - `content/awards.ts` — awards & activities
 - `content/education.ts` — education
@@ -42,7 +42,7 @@ Copy `.env.example` → `.env.local` and fill in:
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://nurul.com.bd
-RESEND_API_KEY=             # Phase 2
+RESEND_API_KEY=
 CONTACT_TO_EMAIL=nurul.islam3f@gmail.com
 CONTACT_FROM_EMAIL=contact@nurul.com.bd
 ```
@@ -50,13 +50,14 @@ CONTACT_FROM_EMAIL=contact@nurul.com.bd
 ## Project status
 
 - **Phase 1 (done):** scaffold, content, all home-page sections, SEO basics, sitemap/robots, JSON-LD
-- **Phase 2:** MDX blog, Resend contact form, dynamic OG images
-- **Phase 3:** systemd + nginx deploy config, deploy README
+- **Phase 2 (done):** Resend contact form, dynamic OG image (the blog was removed)
+- **Phase 3:** superseded by Vercel; `deploy/` keeps an nginx + PM2 fallback
+- **Phase 4 (done, Nov 2026):** redesign — work index with live-site screenshots, self-hosted fonts
 
-See [`PLAN.md`](./PLAN.md) for the detailed task list.
+See [`PLAN.md`](./PLAN.md) for the original task list.
 
-## Deploy target
+## Deploy
 
-- **Canonical:** `https://nurul.com.bd`
-- **Mirror (301):** `nurul.dev` → `nurul.com.bd`
-- **Server:** Ubuntu + nginx reverse proxy → `next start` under systemd
+- **Canonical:** `https://nurul.com.bd` (`www` redirects to it)
+- **Hosting:** Vercel project `profile` — pushes to `main` go to production, other branches get preview URLs
+- **DNS:** Cloudflare, records not proxied
